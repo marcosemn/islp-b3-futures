@@ -1,0 +1,13 @@
+# Ambiente
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Dados da B3 (não versionar: tamanho e termos de uso)
+data/
+
+# Editor / SO
+.vscode/
+.DS_Store
+Thumbs.db
