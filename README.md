@@ -14,7 +14,7 @@ A ideia não é só refazer os labs do livro. Em cada capítulo, levo o método 
 
 | Cap. | Tema | Aplicação em WDO/WIN | Status |
 |---|---|---|---|
-| 2 | Statistical Learning | Exploração dos dados: volume intradiário, caudas, autocorrelação, fluxo × retorno | 🟡 notebook 00 pronto, aguardando dados |
+| 2 | Statistical Learning | Exploração dos dados: volume intradiário, caudas, autocorrelação, fluxo × retorno | 🟡 notebook 00 executado (20 pregões), conclusões pendentes |
 | 3 | Regressão linear | Retorno do próximo minuto ~ desequilíbrio de agressão + retornos defasados + volume; diagnósticos e erros robustos | ⬜ |
 | 4 | Classificação | Direção do próximo movimento: logística, LDA/QDA, Naive Bayes, KNN contra um baseline ingênuo | ⬜ |
 | 5 | Reamostragem | k-fold × *walk-forward*: medir o vazamento de informação do futuro; bootstrap de métricas | ⬜ |
@@ -26,6 +26,14 @@ A ideia não é só refazer os labs do livro. Em cada capítulo, levo o método 
 | 11 | Sobrevivência | Tempo até o preço andar ±N ticks (*time-to-event*, com censura no fim do pregão) | ⬜ |
 | 12 | Não supervisionado | PCA das features; clusters de "tipos de dia" | ⬜ |
 | 13 | Testes múltiplos | Testar muitos sinais e ver quantos sobrevivem a FDR/Bonferroni | ⬜ |
+
+## Amostra atual
+
+20 pregões, de 20/10/2026 a 17/11/2026, com o vencimento principal de WDO e WIN em barras de 1 minuto. Detalhes no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb).
+
+![Preços de WDO e WIN, 20/10 a 17/11/2026](figures/precos_wdo_win.png)
+
+O salto em 26/10 é real: de sexta para segunda, o WDO abriu **+9,2%** e o WIN **−14,9%**. É um dia atípico, que altera vários resultados, e por isso as análises são feitas com e sem ele.
 
 ## Dados
 
