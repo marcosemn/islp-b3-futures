@@ -58,8 +58,10 @@ def read_trades(path: str | Path, roots: tuple[str, ...] | None = DEFAULT_ROOTS)
     path = Path(path)
     with _open_text(path) as fh:
         has_header = fh.readline().startswith("DataReferencia")
+    # Um pregão tem milhões de negócios (só o WIN passa de 4 milhões), então lê em
+    # blocos e filtra cada um, para não carregar o arquivo inteiro na memória.
     with _open_text(path) as fh:
-        df = pd.read_csv(
+        chunks = pd.read_csv(
             fh,
             sep=";",
             decimal=",",
@@ -67,12 +69,15 @@ def read_trades(path: str | Path, roots: tuple[str, ...] | None = DEFAULT_ROOTS)
             names=None if has_header else COLUMNS,
             dtype={"HoraFechamento": str, "CodigoInstrumento": str,
                    "CodigoParticipanteComprador": str, "CodigoParticipanteVendedor": str},
+            chunksize=500_000,
         )
-
-    df["CodigoInstrumento"] = df["CodigoInstrumento"].str.strip()
-    if roots is not None:
-        df = df[df["CodigoInstrumento"].str.startswith(tuple(roots))]
-    df = df[df["AcaoAtualizacao"] != 2]  # remove negócios cancelados
+        parts = []
+        for chunk in chunks:
+            chunk["CodigoInstrumento"] = chunk["CodigoInstrumento"].str.strip()
+            if roots is not None:
+                chunk = chunk[chunk["CodigoInstrumento"].str.startswith(tuple(roots))]
+            parts.append(chunk[chunk["AcaoAtualizacao"] != 2])  # remove negócios cancelados
+    df = pd.concat(parts, ignore_index=True)
 
     hora = df["HoraFechamento"].str.strip().str.zfill(9)
     df = df.assign(
