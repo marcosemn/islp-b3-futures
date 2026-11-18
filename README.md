@@ -31,7 +31,7 @@ A ideia não é só refazer os labs do livro. Em cada capítulo, levo o método 
 
 **Fonte:** B3, [Boletim Diário do Mercado](https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/consultas/boletim-diario/boletim-diario-do-mercado/) → *Derivativos → Derivativos de bolsa → Negócio a negócio*.
 
-**Como obter:** baixe manualmente o arquivo de cada pregão (`.zip`) e salve em `data/raw/`, sem descompactar. A página da B3 proíbe coleta automatizada, por isso o repositório **não tem scraper**. Pelo mesmo motivo, e também por tamanho, os dados **não são versionados** (`data/` está no `.gitignore`).
+**Como obter:** `python -m src.b3_download --dias 30` baixa os pregões que ainda não estão em `data/raw/`. Ele faz uma requisição por pregão, com pausa entre elas, e grava os `.zip` sem descompactar. Também dá para baixar manualmente pelo site e salvar na mesma pasta. A B3 só mantém os pregões mais recentes: em 18/11/2026, o dia 19/10 já não estava disponível. Por isso vale rodar o download com frequência para acumular histórico. Os dados **não são versionados** (`data/` está no `.gitignore`), por tamanho e pelos termos de uso da B3.
 
 **Layout** (Glossário B3 *Negócios Listados*, separador `;`, decimal `,`):
 
@@ -60,8 +60,10 @@ A ideia não é só refazer os labs do livro. Em cada capítulo, levo o método 
 
 ```
 src/
-  b3_loader.py   # lê os .zip da B3, filtra WDO/WIN, remove cancelados, monta timestamps
+  b3_download.py # baixa os .zip de negócio a negócio para data/raw/
+  b3_loader.py   # lê um .zip, filtra WDO/WIN, remove cancelados, monta timestamps
   features.py    # vencimento principal, tick rule, barras de tempo, retornos futuros
+  pipeline.py    # processa um pregão por vez: data/raw/*.zip -> data/processed/*.parquet
 notebooks/
   00_exploracao_wdo_win.ipynb
   chXX_*.ipynb   # um por capítulo do curso
@@ -77,7 +79,14 @@ pip install -r requirements.txt
 pip install torch --index-url https://download.pytorch.org/whl/cpu   # só para o cap. 10
 ```
 
-Depois, abra `notebooks/00_exploracao_wdo_win.ipynb` e rode tudo. O notebook lê `data/raw/` e grava um `.parquet` em `data/processed/`.
+Depois:
+
+```bash
+python -m src.b3_download --dias 30   # ~55 MB por pregão
+python -m src.pipeline                # ~40 s por pregão; só processa os dias novos
+```
+
+e abra `notebooks/00_exploracao_wdo_win.ipynb`. Os notebooks leem os Parquet de `data/processed/`. Um pregão de WDO+WIN tem cerca de 6,7 milhões de negócios, e processar um dia por vez mantém a memória sob controle.
 
 ## Cuidados metodológicos
 

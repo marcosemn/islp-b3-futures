@@ -24,6 +24,16 @@ def tick_rule(price: pd.Series) -> pd.Series:
     return sign.astype(int)
 
 
+def trading_segments(index: pd.DatetimeIndex, max_gap: str = "5min") -> np.ndarray:
+    """Numera trechos contínuos de negociação: um trecho novo começa a cada pregão e
+    depois de qualquer intervalo sem negócios maior que max_gap (leilão estendido,
+    circuit breaker). Retornos não devem atravessar esses saltos."""
+    s = index.to_series()
+    day = s.dt.normalize()
+    new = s.diff().gt(pd.Timedelta(max_gap)) | day.ne(day.shift())
+    return new.cumsum().values
+
+
 def time_bars(trades: pd.DataFrame, freq: str = "1min") -> pd.DataFrame:
     """Agrega um único ticker em barras de tempo com OHLC, volume e fluxo estimado.
 
@@ -51,15 +61,14 @@ def time_bars(trades: pd.DataFrame, freq: str = "1min") -> pd.DataFrame:
 
     bars["vwap"] = bars["notional"] / bars["volume"]
     bars["imbalance"] = bars["signed_volume"] / bars["volume"]  # entre -1 e +1
-    day = bars.index.normalize()
-    bars["ret"] = np.log(bars["close"]).groupby(day).diff()     # não atravessa a noite
+    bars["ret"] = np.log(bars["close"]).groupby(trading_segments(bars.index)).diff()
     return bars.drop(columns="notional")
 
 
 def add_forward_return(bars: pd.DataFrame, horizon: int = 1, col: str = "close") -> pd.DataFrame:
-    """Alvo: log-retorno das próximas `horizon` barras, sem cruzar dias (evita gap noturno)."""
-    day = bars.index.normalize()
+    """Alvo: log-retorno das próximas `horizon` barras, sem atravessar a noite nem
+    intervalos sem negócios (ver trading_segments)."""
     logp = np.log(bars[col])
     out = bars.copy()
-    out[f"fwd_ret_{horizon}"] = logp.groupby(day).shift(-horizon) - logp
+    out[f"fwd_ret_{horizon}"] = logp.groupby(trading_segments(bars.index)).shift(-horizon) - logp
     return out
