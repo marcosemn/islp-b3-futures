@@ -45,6 +45,14 @@ A ideia não é só refazer os labs do livro. Em cada capítulo, levo o método 
 | `CodigoIdentificadorNegocio` | id do negócio |
 | `TipoSessaoPregao` | 1 = regular, 6 = after hours |
 | `CodigoParticipanteComprador` / `Vendedor` | código da corretora de cada lado |
+| `TipoDoCanal` | existe no arquivo real, mas não aparece no glossário |
+
+**O que o arquivo real mostra** (pregão de 17/11/2026, `17-11-2026_NEGOCIOSAVISTA_DRV.txt`):
+- Tamanho: 50 MB zipado, 520 MB de texto, 7,2 milhões de negócios. Só o WIN tem 5,9 milhões e o WDO 0,8 milhão. O loader lê em blocos e guarda apenas WDO/WIN, ocupando cerca de 300 MB por pregão em memória.
+- **Cancelamento:** o negócio original (`AcaoAtualizacao = 0`) continua no arquivo, e o cancelamento entra como uma linha nova (`= 2`) com o mesmo instrumento e id. O loader remove as duas.
+- **Ids:** `CodigoIdentificadorNegocio` só é único *dentro* de cada instrumento. WDO e WIN repetem ids.
+- **Datas:** algumas centenas de linhas têm `DataNegocio` diferente do pregão (por exemplo, 01h do dia anterior) e são descartadas.
+- **Mesmo milissegundo:** cerca de 2/3 dos negócios dividem o milissegundo com outro. A ordem do arquivo é preservada com uma ordenação estável.
 
 > ⚠️ O arquivo **não informa o lado agressor**. O fluxo de compra e venda é *estimado* pela *tick rule* (Lee & Ready, 1991): se o preço sobe em relação ao negócio anterior, conta como compra agressora. Isso é uma aproximação e vale lembrar disso ao interpretar os resultados.
 
