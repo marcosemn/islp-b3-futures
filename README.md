@@ -15,7 +15,7 @@ A ideia não é só refazer os labs do livro. Em cada capítulo, levo o método 
 
 | Cap. | Tema | Aplicação em WDO/WIN | Status |
 |---|---|---|---|
-| 2 | Statistical Learning | Exploração dos dados: volume intradiário, caudas, autocorrelação, fluxo × retorno | ⬜ capítulo ainda não estudado; exploração inicial dos dados no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb) |
+| 2 | Statistical Learning | Exploração dos dados: volume intradiário, caudas, autocorrelação, fluxo × retorno | ✅ aulas (19/11/2026); exploração inicial dos dados no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb) |
 | 3 | Regressão linear | Retorno do próximo minuto ~ desequilíbrio de agressão + retornos defasados + volume; diagnósticos e erros robustos | ⬜ |
 | 4 | Classificação | Direção do próximo movimento: logística, LDA/QDA, Naive Bayes, KNN contra um baseline ingênuo | ⬜ |
 | 5 | Reamostragem | k-fold × *walk-forward*: medir o vazamento de informação do futuro; bootstrap de métricas | ⬜ |
