@@ -9,6 +9,7 @@ A ideia não é só refazer os labs do livro. Em cada capítulo, levo o método 
 
 - Livro: *An Introduction to Statistical Learning with Applications in Python* (James, Witten, Hastie, Tibshirani, Taylor, 2023). PDF gratuito em [statlearning.com](https://www.statlearning.com/).
 - Curso: [edX — Statistical Learning with Python](https://learning.edx.org/course/course-v1:StanfordOnline+SOHS-YSTATSLEARNINGP+1T2024/home)
+- Glossário: [GLOSSARIO.md](GLOSSARIO.md), com os conceitos de mercado, microestrutura e estatística usados no estudo.
 
 ## Progresso
 
