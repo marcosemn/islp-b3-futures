@@ -139,6 +139,11 @@ A regressão linear comum (cap. 3 do ISLP): encontra a reta que minimiza a soma 
 ### Erro-padrão e estatística t
 O erro-padrão mede a incerteza da estimativa do beta. A estatística t = beta / erro-padrão diz quantos erros-padrão o beta está longe de zero. Como regra prática, |t| > 2 costuma ser considerado significativo a 5%.
 
+### p-valor
+A probabilidade de ver um beta pelo menos tão longe de zero quanto o estimado *se o efeito verdadeiro fosse zero*. É outra forma de ler a estatística t: |t| ≈ 1,96 corresponde a p ≈ 0,05. Quanto menor o p-valor, mais difícil explicar o resultado só por acaso.
+- **Limitação:** o p-valor não é a probabilidade de o efeito ser real, e nem diz se o efeito é grande. Com muitos testes, p < 0,05 aparece por acaso (ver testes múltiplos). Ele também herda os problemas do erro-padrão: com erros correlacionados, o p-valor comum sai pequeno demais, e por isso aqui ele vem dos erros HAC.
+- **Aqui:** as tabelas de regressão do [notebook 00](notebooks/00_exploracao_wdo_win.ipynb) mostram t e p-valor lado a lado.
+
 ### R²
 A fração da variação de Y explicada pelo modelo, de 0 a 1. Em retornos de curto prazo, valores muito pequenos (como 0,1%) já são comuns, e mesmo assim podem ter valor econômico se forem estáveis.
 
