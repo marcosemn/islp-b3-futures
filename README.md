@@ -36,6 +36,14 @@ A ideia não é só refazer os labs do livro. Em cada capítulo, levo o método 
 
 O salto em 26/10 é real: de sexta para segunda, o WDO abriu **+9,2%** e o WIN **−14,9%**. É um dia atípico, que altera vários resultados, e por isso as análises são feitas com e sem ele.
 
+## Relatórios
+
+Cada estudo tem uma nota com as perguntas respondidas, as premissas, os achados e um apêndice técnico. O notebook correspondente traz o código e o detalhamento.
+
+| Estudo | Relatório | Notebook |
+|---|---|---|
+| Exploração dos dados de WDO e WIN | [relatorios/00_exploracao_wdo_win.md](relatorios/00_exploracao_wdo_win.md) | [notebook 00](notebooks/00_exploracao_wdo_win.ipynb) |
+
 ## Dados
 
 **Fonte:** B3, [Boletim Diário do Mercado](https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/consultas/boletim-diario/boletim-diario-do-mercado/) → *Derivativos → Derivativos de bolsa → Negócio a negócio*.
@@ -78,6 +86,7 @@ src/
   features.py    # vencimento principal, tick rule, leilões, proxy de negócios diretos, barras, defasagens, retornos futuros
   corretoras.py  # código da corretora -> nome curto (lista oficial de participantes da B3)
   pipeline.py    # processa um pregão por vez: data/raw/*.zip -> data/processed/*.parquet
+relatorios/        # uma nota de pesquisa por estudo (.md)
 notebooks/
   00_exploracao_wdo_win.ipynb
   ch02_statistical_learning.ipynb
