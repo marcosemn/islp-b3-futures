@@ -51,7 +51,10 @@ JANELA_LEILAO = "50ms"
 
 def auction_mask(ts: pd.Series, janela: str = JANELA_LEILAO) -> np.ndarray:
     """True para os negócios dos primeiros `janela` de cada trecho de negociação
-    (ver trading_segments), que é onde sai a execução dos leilões."""
+    (ver trading_segments), que é onde sai a execução dos leilões. A janela também pega
+    a negociação contínua logo depois do leilão (no WIN, ~3 vezes mais negócios que o
+    primeiro milissegundo); para a proxy de diretos isso só deixa de marcar um eventual
+    direto nesses 50 ms."""
     seg = trading_segments(pd.DatetimeIndex(ts))
     inicio = ts.groupby(seg).transform("min")
     return (ts - inicio <= pd.Timedelta(janela)).to_numpy()

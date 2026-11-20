@@ -11,6 +11,7 @@ Uso:
 
 from __future__ import annotations
 
+from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
@@ -52,7 +53,8 @@ def build(raw_dir: Path = RAW_DIR, processed_dir: Path = PROCESSED_DIR, freq: st
     done_file = processed_dir / f"done_{freq}.txt"
     done = set(done_file.read_text().split()) if done_file.exists() and not refazer else set()
     new = []
-    for path in sorted(raw_dir.glob("*.zip")):
+    # o nome é DD-MM-AAAA_...; ordena pela data, não pelo texto
+    for path in sorted(raw_dir.glob("*.zip"), key=lambda p: datetime.strptime(p.name[:10], "%d-%m-%Y")):
         if path.name in done:
             continue
         day = process_day(path, processed_dir, freq)

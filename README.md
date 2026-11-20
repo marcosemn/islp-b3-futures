@@ -75,7 +75,7 @@ O salto em 26/10 é real: de sexta para segunda, o WDO abriu **+9,2%** e o WIN *
 src/
   b3_download.py # baixa os .zip de negócio a negócio para data/raw/
   b3_loader.py   # lê um .zip, filtra WDO/WIN, remove cancelados, monta timestamps
-  features.py    # vencimento principal, tick rule, barras de tempo, defasagens, retornos futuros
+  features.py    # vencimento principal, tick rule, leilões, proxy de negócios diretos, barras, defasagens, retornos futuros
   pipeline.py    # processa um pregão por vez: data/raw/*.zip -> data/processed/*.parquet
 notebooks/
   00_exploracao_wdo_win.ipynb
