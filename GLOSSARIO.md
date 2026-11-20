@@ -44,6 +44,11 @@ O livro reúne as ordens limitadas que esperam execução. O **bid** é a melhor
 Um **negócio** é uma execução entre uma corretora compradora e uma vendedora. Uma **ordem** grande a mercado consome várias ordens do livro e gera vários negócios no mesmo milissegundo.
 - **Aqui:** cerca de 80% dos negócios dividem o milissegundo com outro, e a maior rajada foi de 4.379 negócios do WIN em 1 ms ([notebook 00](notebooks/00_exploracao_wdo_win.ipynb)).
 
+### Tamanho do negócio: contagem × volume
+Uma estatística sobre negócios pode ser feita **por contagem** (cada negócio vale 1) ou **ponderada pelo volume** (cada negócio vale o número de contratos). Quando a distribuição do tamanho é muito assimétrica, as duas contam histórias diferentes.
+- **Aqui:** 67% dos negócios do WDO são de 1 contrato, mas eles movimentam só 15% do volume. Já os negócios de 11 contratos ou mais são menos de 8% e carregam ~60% dos contratos ([notebook 00](notebooks/00_exploracao_wdo_win.ipynb)).
+- **Limitação:** o tamanho do *negócio* não é o tamanho da *ordem*. Uma ordem grande que encontra várias ordens pequenas no livro vira vários negócios pequenos.
+
 ### Agressor
 Quem toma a iniciativa do negócio, enviando uma ordem a mercado contra uma ordem que já estava no livro. Comprar "agredindo" o ask indica pressão compradora; vender no bid indica pressão vendedora.
 

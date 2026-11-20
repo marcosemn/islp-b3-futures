@@ -40,6 +40,8 @@ O salto em 26/10 é real: de sexta para segunda, o WDO abriu **+9,2%** e o WIN *
 
 **Fonte:** B3, [Boletim Diário do Mercado](https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/consultas/boletim-diario/boletim-diario-do-mercado/) → *Derivativos → Derivativos de bolsa → Negócio a negócio*.
 
+**Endereço de download:** a página do Boletim é só uma moldura. O conteúdo vem do aplicativo `arquivos.b3.com.br/bdi`, e o botão "Negócio a negócio → Derivativos" desse aplicativo baixa de `https://drp.b3.com.br/rapinegocios/tickercsv/AAAA-MM-DD?type=1` (`type=1` = derivativos, `type=2` = renda variável). Isso está no código público do aplicativo: `config.js` define `tickerApi` e a função `GetStorageUrl2` monta a URL, conferido em 20/11/2026. O script usa a mesma URL, então os arquivos são os mesmos do download manual.
+
 **Como obter:** `python -m src.b3_download --dias 30` baixa os pregões que ainda não estão em `data/raw/`. Ele faz uma requisição por pregão, com pausa entre elas, e grava os `.zip` sem descompactar. Também dá para baixar manualmente pelo site e salvar na mesma pasta. A B3 só mantém os pregões mais recentes: em 18/11/2026, o dia 19/10 já não estava disponível. Por isso vale rodar o download com frequência para acumular histórico. Os dados **não são versionados** (`data/` está no `.gitignore`), por tamanho e pelos termos de uso da B3.
 
 **Layout** (Glossário B3 *Negócios Listados*, separador `;`, decimal `,`):
