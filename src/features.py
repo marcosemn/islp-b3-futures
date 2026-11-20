@@ -41,7 +41,8 @@ def trading_segments(index: pd.DatetimeIndex, max_gap: str = "5min") -> np.ndarr
 
 
 # Lote mínimo para registro de oferta direta no WDO e no WIN: 500 contratos
-# (B3, Ofício Circular 176/2022-PRE, Tabela 2). A B3 revisa esse valor; conferir o vigente.
+# (B3, Ofício Circular 176/2022-PRE, Tabela 2). É o valor documentado em 2022; a B3 revisa esse
+# parâmetro periodicamente, e a proxy usa 500 como referência fixa para todo o estudo.
 LOTE_MINIMO_DIRETO = 500
 # A execução de um leilão (abertura, reabertura, fechamento do WIN) dura no máximo ~20 ms
 # nos dados de out-nov/2026; 50 ms dá folga.
