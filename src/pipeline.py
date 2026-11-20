@@ -66,7 +66,8 @@ def load(kind: str = "bars_1min", processed_dir: Path = PROCESSED_DIR) -> pd.Dat
     files = sorted((processed_dir / kind).glob("*.parquet"))
     if not files:
         raise FileNotFoundError(f"Nada em {processed_dir / kind} - rode `python -m src.pipeline` antes.")
-    return pd.concat([pd.read_parquet(f) for f in files])
+    # Em "trades" o índice é só a posição da linha no dia; renumera para não repetir entre dias.
+    return pd.concat([pd.read_parquet(f) for f in files], ignore_index=(kind == "trades"))
 
 
 if __name__ == "__main__":

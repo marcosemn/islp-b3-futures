@@ -88,10 +88,12 @@ Mede se a distribuição pende para um lado. Negativa: quedas fortes são mais c
 
 ### Autocorrelação (ACF)
 A correlação de uma série com ela mesma defasada em k períodos ("lag k"): o minuto anterior ajuda a prever o próximo? A banda ±1,96/√n indica até onde o valor ainda é indistinguível de zero.
+- **Limitação:** a banda supõe variância constante. Com aglomeração de volatilidade, ela fica estreita demais e exagera a significância.
+- **Aqui:** no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb), sem 26/10, o lag 1 do WDO (−0,035) fica fora da banda, mas com erros HAC o t cai de −3,7 para −2,6.
 
 ### Aglomeração de volatilidade (*volatility clustering*)
 Períodos agitados tendem a vir seguidos de períodos agitados, e calmos de calmos. Aparece como autocorrelação positiva de |retorno|, mesmo quando o retorno em si não tem autocorrelação.
-- **Aqui:** a autocorrelação de |ret| fica entre 0,2 e 0,3. A *intensidade* do movimento é previsível, mas a *direção* não.
+- **Aqui:** a autocorrelação de |ret| fica entre 0,29 e 0,34 com todos os pregões e em ~0,2 sem 26/10. A *intensidade* do movimento é previsível, mas a *direção* não.
 
 ### Volatilidade realizada
 Raiz da soma dos retornos ao quadrado num período (aqui, os retornos de 1 minuto de um pregão). Mede quanto o preço oscilou de fato.
@@ -111,11 +113,20 @@ A fração da variação de Y explicada pelo modelo, de 0 a 1. Em retornos de cu
 
 ### Erros-padrão HAC (Newey-West)
 *Heteroskedasticity and Autocorrelation Consistent.* A fórmula padrão do erro-padrão supõe erros independentes e com variância constante. Em finanças isso falha: a volatilidade muda ao longo do tempo e observações vizinhas se influenciam. O resultado é um erro-padrão pequeno demais, e coisas parecem significativas sem ser. O HAC corrige o erro-padrão para esses dois problemas. O beta não muda, só a incerteza em volta dele.
-- **Aqui:** as regressões do [notebook 00](notebooks/00_exploracao_wdo_win.ipynb) usam `cov_type="HAC"`.
+- **Aqui:** as regressões do [notebook 00](notebooks/00_exploracao_wdo_win.ipynb) usam `cov_type="HAC"`. No teste de reversão de 1 minuto, o HAC reduz o |t| quase pela metade em relação ao erro-padrão comum.
+
+### Retornos sobrepostos
+Retornos de horizonte maior que o intervalo das observações compartilham minutos: o retorno de 9h00–9h05 e o de 9h01–9h06 têm 4 minutos em comum. Isso cria autocorrelação nos erros da regressão por construção, mesmo sem nenhum sinal.
+- **Por que importa:** sem correção, os t ficam inflados. O HAC precisa de `maxlags` pelo menos igual ao horizonte.
+- **Aqui:** os testes de 5 e 15 minutos do [notebook 00](notebooks/00_exploracao_wdo_win.ipynb) usam `maxlags` = horizonte + 5.
 
 ### Testes múltiplos e correção de Bonferroni
 Com um limite de 5%, 1 em cada 20 testes dá "significativo" por puro acaso. Ao testar muitas hipóteses, algum falso positivo é quase certo. Bonferroni divide o nível de significância pelo número de testes: com 18 testes, o |t| exigido sobe de ~2 para ~3. É o tema do cap. 13 do ISLP.
-- **Aqui:** o "WDO antecipa o WIN em 1 minuto" (t = −2,7) não sobrevive à correção.
+- **Aqui:** no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb), dos 18 testes registrados (2 ativos × 3 horizontes × 3 preditores), só 1 passa de |t| > 1,96: o "WDO antecipa o WIN em 1 minuto" (t = −2,7). Ele não sobrevive à correção (|t| > 2,99). Com 18 testes, o acaso sozinho já daria em média 0,9 "significativo".
+
+### Antecipação (*lead-lag*)
+Quando o movimento de um ativo hoje ajuda a prever o movimento de outro **depois**. É diferente de correlação no mesmo instante, que não serve para prever nada.
+- **Aqui:** WDO e WIN têm correlação de −0,46 no mesmo minuto, mas nenhum antecipa o outro em 1 a 15 minutos.
 
 ### Correlação × causalidade
 Duas variáveis andarem juntas não quer dizer que uma cause a outra. As duas podem estar reagindo a uma terceira coisa, como uma notícia.
@@ -190,6 +201,7 @@ Além da classe, um classificador pode dar a probabilidade de cada classe (no KN
 
 ### Retorno futuro (alvo) e viés de *look-ahead*
 O alvo de um modelo de previsão é o que acontece **depois** (ex.: `fwd_ret_1`, o retorno do próximo minuto). *Look-ahead* é usar, sem querer, informação que ainda não estaria disponível no momento da decisão. Isso produz resultados ótimos e falsos.
+- **Aqui:** `front_month()` escolhe o vencimento pelo volume do dia inteiro, o que às 9h não seria conhecido. É aceitável para estudar barras, porque a troca é nítida, mas não para simular uma estratégia. O mesmo cuidado vale para a padronização e para o limiar "agitado" do cap. 2, que são calculados só com o treino.
 
 ### Mudança de regime (não estacionariedade)
 O comportamento do mercado muda ao longo do tempo (volatilidade, volume, correlações). Um modelo treinado num período pode encontrar outro "mundo" no teste.

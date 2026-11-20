@@ -7,7 +7,13 @@ import pandas as pd
 
 
 def front_month(trades: pd.DataFrame) -> pd.DataFrame:
-    """Mantém, para cada dia e ativo-raiz (WDO/WIN), só o vencimento mais negociado."""
+    """Mantém, para cada dia e ativo-raiz (WDO/WIN), só o vencimento mais negociado.
+
+    Atenção: a escolha usa o volume do dia inteiro, que às 9h ainda não seria conhecido
+    (um pequeno look-ahead). Para estudar barras isso é aceitável, porque a troca de
+    vencimento é nítida (rolagem do WDO em 30/10/2026: 3,4 milhões de contratos no Z26
+    contra 0,2 milhão no X26). Uma estratégia real precisaria de uma regra conhecida antes
+    da abertura, como o volume do dia anterior."""
     day = trades["ts"].dt.normalize()
     vol = trades.groupby([day, "root", "ticker"], observed=True)["qty"].sum()
     top = vol.groupby(level=[0, 1], observed=True).idxmax().map(lambda key: key[2])

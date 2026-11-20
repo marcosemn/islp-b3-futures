@@ -61,7 +61,7 @@ O salto em 26/10 é real: de sexta para segunda, o WDO abriu **+9,2%** e o WIN *
 - **Cancelamento:** o negócio original (`AcaoAtualizacao = 0`) continua no arquivo, e o cancelamento entra como uma linha nova (`= 2`) com o mesmo instrumento e id. O loader remove as duas.
 - **Ids:** `CodigoIdentificadorNegocio` só é único *dentro* de cada instrumento. WDO e WIN repetem ids.
 - **Datas:** algumas centenas de linhas têm `DataNegocio` diferente do pregão (por exemplo, 01h do dia anterior) e são descartadas.
-- **Mesmo milissegundo:** cerca de 2/3 dos negócios dividem o milissegundo com outro. A ordem do arquivo é preservada com uma ordenação estável.
+- **Mesmo milissegundo:** cerca de 3/4 dos negócios dividem o milissegundo com outro (75% no WIN e 78% no WDO). A ordem do arquivo é preservada com uma ordenação estável.
 
 > ⚠️ O arquivo **não informa o lado agressor**. O fluxo de compra e venda é *estimado* pela *tick rule* (Lee & Ready, 1991): se o preço sobe em relação ao negócio anterior, conta como compra agressora. Isso é uma aproximação e vale lembrar disso ao interpretar os resultados.
 

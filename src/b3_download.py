@@ -69,7 +69,11 @@ def baixar_periodo(inicio: date, fim: date, raw_dir: Path = RAW_DIR) -> list[Pat
         if dia.weekday() < 5 and not destino.exists():
             conteudo = baixar_zip(dia)
             if conteudo:
-                destino.write_bytes(conteudo)
+                # grava num arquivo temporário e só depois renomeia: se o processo cair no meio,
+                # não fica um .zip truncado que seria pulado ("já existe") nas próximas execuções
+                parcial = destino.with_suffix(".part")
+                parcial.write_bytes(conteudo)
+                parcial.replace(destino)
                 salvos.append(destino)
                 print(f"{dia:%d/%m/%Y}: {len(conteudo) / 1_048_576:.0f} MB", flush=True)
             else:
