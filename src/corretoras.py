@@ -1,9 +1,13 @@
 """Nomes curtos das corretoras (participantes de negociação) que aparecem nos negócios de WDO e WIN.
 
 O arquivo negócio a negócio da B3 só traz o código numérico da corretora compradora e da vendedora
-(colunas buyer e seller). Os nomes vêm da lista oficial de participantes da B3
-(Produtos e serviços > Participantes > Busca de participantes, exportada em 20/11/2026,
-perfil "Participante de Negociação Pleno"). Os nomes abaixo foram encurtados à mão para leitura.
+(colunas buyer e seller). Os nomes vêm da lista oficial de participantes da B3:
+
+    https://www.b3.com.br/pt_br/produtos-e-servicos/participantes/busca-de-participantes/participantes/
+
+(exportada em 20/11/2026; o código usado é o do perfil "Participante de Negociação Pleno").
+Os nomes abaixo foram encurtados à mão para leitura. Se aparecer uma corretora nova nos dados,
+nome_corretora() devolve "cód. N"; aí é só consultar a lista e acrescentar o código aqui.
 """
 
 from __future__ import annotations
