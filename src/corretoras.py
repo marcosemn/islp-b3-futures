@@ -6,8 +6,8 @@ O arquivo negócio a negócio da B3 só traz o código numérico da corretora co
     https://www.b3.com.br/pt_br/produtos-e-servicos/participantes/busca-de-participantes/participantes/
 
 (exportada em 20/11/2026; o código usado é o do perfil "Participante de Negociação Pleno").
-Os nomes abaixo foram encurtados à mão para leitura. Se aparecer uma corretora nova nos dados,
-nome_corretora() devolve "cód. N"; aí é só consultar a lista e acrescentar o código aqui.
+Os nomes foram abreviados manualmente para facilitar a leitura. Códigos ausentes da tabela
+são exibidos como "cód. N" por nome_corretora() e devem ser incluídos a partir da mesma lista.
 """
 
 from __future__ import annotations
