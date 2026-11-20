@@ -59,7 +59,12 @@ Pela regra da B3 (Manual de Procedimentos Operacionais de Negociação), a ofert
 ### Cauda longa e função de sobrevivência (CCDF)
 A **função de sobrevivência** P(X ≥ x) dá, para cada valor x, a fração das observações que são pelo menos x. Em escala log-log, uma distribuição de **cauda curta** (como a exponencial) despenca, enquanto uma de **cauda longa** desce quase em linha reta e chega a valores enormes. Uma reta em log-log é a marca de uma *cauda de potência*.
 - **Por que importa:** com cauda longa, a média é puxada por poucos valores extremos e descreve mal o caso típico.
-- **Aqui:** o tamanho dos negócios. Com a mesma média, uma distribuição de cauda curta tornaria um negócio de 100 contratos praticamente impossível. Nos dados, 1 em cada ~40 mil negócios do WDO passa de 1.000 contratos.
+- **Aqui:** o tamanho dos negócios. Com a mesma média, uma distribuição de cauda curta tornaria um negócio de 100 contratos praticamente impossível (5 em 1 trilhão no WDO). Nos dados, é 1 em cada 369, e 1 em cada ~40 mil negócios do WDO passa de 1.000 contratos.
+- **Como ler o gráfico:** os dois eixos estão em **escala logarítmica** (cada marca vale 10 vezes a anterior), para caberem frações de 1 até 0,00000001. Uma curva quase reta quer dizer que, cada vez que o tamanho é multiplicado por 10, a chance cai por um fator parecido.
+
+### Distribuição geométrica
+A "exponencial" dos números inteiros: cada passo (aqui, cada contrato a mais) multiplica a probabilidade por um fator fixo. É o exemplo clássico de **cauda curta**, porque a probabilidade cai rápido demais para produzir valores enormes.
+- **Aqui:** é a linha tracejada de referência no gráfico de P(tamanho ≥ x) do [notebook 00](notebooks/00_exploracao_wdo_win.ipynb), com a mesma média dos dados (fator 0,77 por contrato no WDO).
 
 ### Curva de concentração
 Ordena os itens do maior para o menor e mostra que fração do total os x% maiores carregam. Se todos fossem iguais, a curva seria a diagonal. Quanto mais longe dela, mais concentrado.
