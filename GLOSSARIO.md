@@ -47,7 +47,7 @@ Um **negócio** é uma execução entre uma corretora compradora e uma vendedora
 
 ### Tamanho do negócio: contagem × volume
 Uma estatística sobre negócios pode ser feita **por contagem** (cada negócio vale 1) ou **ponderada pelo volume** (cada negócio vale o número de contratos). Quando a distribuição do tamanho é muito assimétrica, as duas contam histórias diferentes.
-- **Aqui:** 67% dos negócios do WDO são de 1 contrato, mas eles movimentam só 15% do volume. Já os negócios de 11 contratos ou mais são menos de 8% e carregam ~60% dos contratos ([notebook 00](notebooks/00_exploracao_wdo_win.ipynb)).
+- **Aqui:** 67% dos negócios do WDO são de 1 contrato, mas eles movimentam só 16% do volume. Já os negócios de 11 contratos ou mais são menos de 8% e carregam ~60% dos contratos ([notebook 00](notebooks/00_exploracao_wdo_win.ipynb)).
 - **Limitação:** o tamanho do *negócio* não é o tamanho da *ordem*. Uma ordem grande que encontra várias ordens pequenas no livro vira vários negócios pequenos.
 
 ### Negócio direto (oferta direta)
@@ -101,7 +101,7 @@ log(preço atual / preço anterior). Para movimentos pequenos fica quase igual a
 
 ### Curtose e caudas gordas
 A curtose mede o peso das caudas da distribuição, ou seja, a frequência de eventos extremos. A distribuição normal tem curtose 3; acima disso, a distribuição é **leptocúrtica** (caudas gordas).
-- **Aqui:** os retornos de 1 minuto têm curtose 12 (WDO) e 21 (WIN). Movimentos extremos são muito mais comuns do que a normal prevê.
+- **Aqui:** os retornos de 1 minuto têm curtose 15 (WDO) e 21 (WIN). Movimentos extremos são muito mais comuns do que a normal prevê. A curtose depende de poucos minutos: no WDO, uma única queda de 47 bps em 1 minuto (19/11, 12:03) faz boa parte dela.
 
 ### Assimetria (*skewness*)
 Mede se a distribuição pende para um lado. Negativa: quedas fortes são mais comuns que altas fortes. Positiva: o contrário.
@@ -110,11 +110,11 @@ Mede se a distribuição pende para um lado. Negativa: quedas fortes são mais c
 ### Autocorrelação (ACF)
 A correlação de uma série com ela mesma defasada em k períodos ("lag k"): o minuto anterior ajuda a prever o próximo? A banda ±1,96/√n indica até onde o valor ainda é indistinguível de zero.
 - **Limitação:** a banda supõe variância constante. Com aglomeração de volatilidade, ela fica estreita demais e exagera a significância.
-- **Aqui:** no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb), sem 26/10, o lag 1 do WDO (−0,035) fica fora da banda, mas com erros HAC o t cai de −3,7 para −2,6.
+- **Aqui:** no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb), sem 26/10, o lag 1 do WDO (−0,031) fica fora da banda, mas com erros HAC o t cai de −3,4 para −1,9 e deixa de ser significativo.
 
 ### Aglomeração de volatilidade (*volatility clustering*)
 Períodos agitados tendem a vir seguidos de períodos agitados, e calmos de calmos. Aparece como autocorrelação positiva de |retorno|, mesmo quando o retorno em si não tem autocorrelação.
-- **Aqui:** a autocorrelação de |ret| fica entre 0,29 e 0,34 com todos os pregões e em ~0,2 sem 26/10. A *intensidade* do movimento é previsível, mas a *direção* não.
+- **Aqui:** a autocorrelação de |ret| fica entre 0,29 e 0,33 com todos os pregões e em ~0,22 sem 26/10. A *intensidade* do movimento é previsível, mas a *direção* não.
 
 ### Volatilidade realizada
 Raiz da soma dos retornos ao quadrado num período (aqui, os retornos de 1 minuto de um pregão). Mede quanto o preço oscilou de fato.
@@ -143,7 +143,7 @@ Retornos de horizonte maior que o intervalo das observações compartilham minut
 
 ### Testes múltiplos e correção de Bonferroni
 Com um limite de 5%, 1 em cada 20 testes dá "significativo" por puro acaso. Ao testar muitas hipóteses, algum falso positivo é quase certo. Bonferroni divide o nível de significância pelo número de testes: com 18 testes, o |t| exigido sobe de ~2 para ~3. É o tema do cap. 13 do ISLP.
-- **Aqui:** no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb), dos 18 testes registrados (2 ativos × 3 horizontes × 3 preditores), só 1 passa de |t| > 1,96: o "WDO antecipa o WIN em 1 minuto" (t = −2,7). Ele não sobrevive à correção (|t| > 2,99). Com 18 testes, o acaso sozinho já daria em média 0,9 "significativo".
+- **Aqui:** no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb), dos 18 testes registrados (2 ativos × 3 horizontes × 3 preditores), só 1 passa de |t| > 1,96 (o fluxo do WIN "prevendo" os 5 minutos seguintes, t = −2,0), e ele não sobrevive à correção (|t| > 2,99). Com 18 testes, o acaso sozinho já daria em média 0,9 "significativo". Com 20 pregões, o teste que passava era outro ("WDO antecipa o WIN em 1 minuto", t = −2,7), que caiu para −1,7 com 2 pregões a mais: falsos positivos mudam de lugar quando a amostra cresce.
 
 ### Antecipação (*lead-lag*)
 Quando o movimento de um ativo hoje ajuda a prever o movimento de outro **depois**. É diferente de correlação no mesmo instante, que não serve para prever nada.
@@ -174,7 +174,7 @@ Um modelo **paramétrico** supõe uma forma para f (por exemplo, uma reta) e est
 
 ### Interpretabilidade, parcimônia e caixa-preta
 Quanto mais flexível o modelo, mais difícil entender *por que* ele prevê o que prevê. Uma regressão linear mostra o efeito de cada feature num coeficiente. Um KNN ou um boosting (cap. 8) são **caixas-pretas**. **Parcimônia** é preferir o modelo mais simples, com menos features, quando ele prevê quase tão bem quanto o complexo.
-- **Aqui:** na seção 5, uma linear com só 3 features (as defasagens de |ret|) chega a 24,1% de R² no WIN, contra 29,9% do melhor KNN.
+- **Aqui:** na seção 5, uma linear com só 3 features (as defasagens de |ret|) chega a 18,9% de R² no WIN, contra 24,2% do melhor KNN (escolhido olhando o teste).
 
 ### KNN (K vizinhos mais próximos)
 Para prever num ponto x, o KNN pega os K exemplos do treino mais próximos de x. Na **regressão**, tira a média do Y deles. Na **classificação**, escolhe a classe mais frequente entre eles. É a forma mais direta de estimar E[Y | X = x].
@@ -190,7 +190,7 @@ O modelo é ajustado no **treino** e avaliado no **teste**, que são dados que e
 
 ### Overfitting (sobreajuste)
 Quando o modelo decora o ruído do treino: erro de treino baixo e erro de teste alto.
-- **Aqui:** o KNN com K=1 tem erro de treino zero e é o pior modelo no teste, com R² fora da amostra de −116% a −149% na direção.
+- **Aqui:** o KNN com K=1 tem erro de treino zero e é o pior modelo no teste, com R² fora da amostra de −89% a −145% na direção.
 
 ### Trade-off viés-variância
 O erro de teste esperado é a soma de três partes: **viés²**, o erro por o modelo ser simples demais para a forma verdadeira de f; **variância**, o quanto a previsão muda se o modelo for treinado em outra amostra; e o **erro irredutível**. Aumentar a flexibilidade troca viés por variância. O ótimo fica no meio, e por isso a curva de erro de teste tem forma de "U".
@@ -198,7 +198,7 @@ O erro de teste esperado é a soma de três partes: **viés²**, o erro por o mo
 
 ### Maldição da dimensionalidade
 Com muitas features, os pontos ficam espalhados e até os "vizinhos mais próximos" estão longe. Métodos locais, como o KNN, pioram rápido.
-- **Aqui:** com 9 features, o raio da vizinhança que contém 10% dos minutos já cobre ~60% da distância típica entre dois minutos quaisquer. Com 50 features de ruído, o KNN perde quase metade do R² e a regressão linear quase nada.
+- **Aqui:** com 9 features, o raio da vizinhança que contém 10% dos minutos já cobre ~60% da distância típica entre dois minutos quaisquer. Com 50 features de ruído, o KNN perde ~40% do R² e a regressão linear quase nada.
 
 ### R² fora da amostra (MSE relativo)
 MSE relativo = MSE do modelo no teste / MSE do chute ingênuo (prever sempre a média do treino). R² fora da amostra = 1 − MSE relativo. Se for positivo, o modelo acrescenta informação. Se for negativo, ele é **pior** do que não saber nada, algo que o R² dentro da amostra nunca mostra.
@@ -209,7 +209,7 @@ Na classificação, a **taxa de erro** é a fração de previsões erradas. O **
 ### Classificador de Bayes e erro de Bayes
 O classificador de Bayes escolhe, para cada x, a classe mais provável, P(Y | X = x). Ele tem o menor erro possível, o **erro de Bayes**, que é o erro irredutível da classificação. Na prática, P(Y | X) é desconhecida, então ele serve de referência teórica. O KNN tenta aproximá-lo.
 - **Fronteira de decisão de Bayes:** o conjunto de pontos x em que duas classes empatam em probabilidade (com duas classes, onde P = 0,5). De um lado da fronteira o classificador escolhe uma classe; do outro, a outra.
-- **Aqui:** na seção 4.2, uma simulação em que P(Y | X) é conhecida. A fronteira é `abs_ret` ≈ 3,5 bps, o erro de Bayes é 41,7%, e o melhor KNN chega a 41,9%.
+- **Aqui:** na seção 4.2, uma simulação em que P(Y | X) é conhecida. A fronteira é `abs_ret` ≈ 3,45 bps, o erro de Bayes é 42,0%, e o melhor KNN chega a 42,3%.
 
 ### Probabilidade estimada e calibração
 Além da classe, um classificador pode dar a probabilidade de cada classe (no KNN, a fração de vizinhos de cada classe). Uma probabilidade é **calibrada** quando, entre os casos com p̂ ≈ 0,7, cerca de 70% são de fato daquela classe. Um modelo pode **ordenar** bem os casos (os de p̂ alto são mais arriscados que os de p̂ baixo) e mesmo assim errar o **nível** das probabilidades.
@@ -226,7 +226,7 @@ O alvo de um modelo de previsão é o que acontece **depois** (ex.: `fwd_ret_1`,
 
 ### Mudança de regime (não estacionariedade)
 O comportamento do mercado muda ao longo do tempo (volatilidade, volume, correlações). Um modelo treinado num período pode encontrar outro "mundo" no teste.
-- **Aqui:** o treino do cap. 2 inclui 26/10, e o teste (10/11 a 17/11) foi bem mais calmo. Só ~35% dos minutos do teste ficaram acima da mediana de |retorno| do treino.
+- **Aqui:** o treino do cap. 2 inclui 26/10, e o teste (11/11 a 19/11) foi mais calmo. Só 39–41% dos minutos do teste ficaram acima da mediana de |retorno| do treino.
 
 ### Validação *walk-forward*
 Treinar com o passado e testar no período seguinte, avançando a janela no tempo. É a forma correta de validar em séries temporais. O k-fold aleatório mistura passado e futuro e vaza informação (cap. 5 do ISLP).

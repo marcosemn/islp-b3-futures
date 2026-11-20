@@ -30,9 +30,9 @@ A ideia não é só refazer os labs do livro. Em cada capítulo, levo o método 
 
 ## Amostra atual
 
-20 pregões, de 20/10/2026 a 17/11/2026, com o vencimento principal de WDO e WIN em barras de 1 minuto. Detalhes no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb).
+22 pregões, de 20/10/2026 a 19/11/2026, com o vencimento principal de WDO e WIN em barras de 1 minuto. Detalhes no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb).
 
-![Preços de WDO e WIN, 20/10 a 17/11/2026](figures/precos_wdo_win.png)
+![Preços de WDO e WIN, 20/10 a 19/11/2026](figures/precos_wdo_win.png)
 
 O salto em 26/10 é real: de sexta para segunda, o WDO abriu **+9,2%** e o WIN **−14,9%**. É um dia atípico, que altera vários resultados, e por isso as análises são feitas com e sem ele.
 
