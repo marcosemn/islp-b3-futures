@@ -126,7 +126,7 @@ Duas variáveis andarem juntas não quer dizer que uma cause a outra. As duas po
 ## Aprendizado estatístico (ISLP cap. 2)
 
 ### f(X), erro redutível e erro irredutível
-O ponto de partida do curso é **Y = f(X) + ε**. O melhor palpite para Y quando se conhece X é f(x) = E[Y | X = x], a média de Y entre os casos com aquele x. O erro de um modelo tem duas partes: a **redutível**, que vem de estimar f mal e diminui com um modelo melhor, e a **irredutível**, que é a variância de ε. Essa segunda nenhum modelo elimina, porque ε depende de coisas que não estão em X.
+O ponto de partida do curso é **Y = f(X) + ε**. O melhor palpite para Y quando se conhece X é f(x) = E[Y | X = x], a média de Y entre os casos com aquele x. Essa f ideal se chama **função de regressão**, e é ela que minimiza o erro quadrático médio. O erro de um modelo tem duas partes: a **redutível**, que vem de estimar f mal e diminui com um modelo melhor, e a **irredutível**, que é a variância de ε. Essa segunda nenhum modelo elimina, porque ε depende de coisas que não estão em X.
 - **Por que importa:** em retornos de curto prazo, quase todo o erro é irredutível.
 - **Limitação:** o erro só é "irredutível" em relação às features escolhidas. Com outra informação, parte dele poderia ser explicada.
 - **Aqui:** seção 1 do [notebook do cap. 2](notebooks/ch02_statistical_learning.ipynb). A direção do próximo minuto é quase toda irredutível, e a intensidade não.
@@ -137,6 +137,12 @@ O quanto um modelo consegue se dobrar para seguir os dados. Uma reta é pouco fl
 
 ### Modelo paramétrico (estruturado) × não paramétrico
 Um modelo **paramétrico** supõe uma forma para f (por exemplo, uma reta) e estima poucos números. É estável, mas erra se a forma estiver errada. Um modelo **não paramétrico**, como o KNN, não supõe forma nenhuma. Ele se adapta melhor, mas precisa de muito mais dados e sofre com muitas features.
+- **Exemplo intermediário:** o modelo **quadrático** (y = b0 + b1·x + b2·x²) continua paramétrico e é estimado como uma regressão linear, mas consegue fazer curva.
+- **Aqui:** na seção 1 do [notebook do cap. 2](notebooks/ch02_statistical_learning.ipynb), reta, parábola e KNN aparecem lado a lado.
+
+### Interpretabilidade, parcimônia e caixa-preta
+Quanto mais flexível o modelo, mais difícil entender *por que* ele prevê o que prevê. Uma regressão linear mostra o efeito de cada feature num coeficiente. Um KNN ou um boosting (cap. 8) são **caixas-pretas**. **Parcimônia** é preferir o modelo mais simples, com menos features, quando ele prevê quase tão bem quanto o complexo.
+- **Aqui:** na seção 5, uma linear com só 3 features (as defasagens de |ret|) chega a 24,1% de R² no WIN, contra 29,9% do melhor KNN.
 
 ### KNN (K vizinhos mais próximos)
 Para prever num ponto x, o KNN pega os K exemplos do treino mais próximos de x. Na **regressão**, tira a média do Y deles. Na **classificação**, escolhe a classe mais frequente entre eles. É a forma mais direta de estimar E[Y | X = x].
@@ -160,7 +166,7 @@ O erro de teste esperado é a soma de três partes: **viés²**, o erro por o mo
 
 ### Maldição da dimensionalidade
 Com muitas features, os pontos ficam espalhados e até os "vizinhos mais próximos" estão longe. Métodos locais, como o KNN, pioram rápido.
-- **Aqui:** com 50 features de ruído, o KNN perde quase metade do R² e a regressão linear quase nada.
+- **Aqui:** com 9 features, o raio da vizinhança que contém 10% dos minutos já cobre ~60% da distância típica entre dois minutos quaisquer. Com 50 features de ruído, o KNN perde quase metade do R² e a regressão linear quase nada.
 
 ### R² fora da amostra (MSE relativo)
 MSE relativo = MSE do modelo no teste / MSE do chute ingênuo (prever sempre a média do treino). R² fora da amostra = 1 − MSE relativo. Se for positivo, o modelo acrescenta informação. Se for negativo, ele é **pior** do que não saber nada, algo que o R² dentro da amostra nunca mostra.
@@ -170,7 +176,13 @@ Na classificação, a **taxa de erro** é a fração de previsões erradas. O **
 
 ### Classificador de Bayes e erro de Bayes
 O classificador de Bayes escolhe, para cada x, a classe mais provável, P(Y | X = x). Ele tem o menor erro possível, o **erro de Bayes**, que é o erro irredutível da classificação. Na prática, P(Y | X) é desconhecida, então ele serve de referência teórica. O KNN tenta aproximá-lo.
-- **Aqui:** na seção 4.1, uma simulação em que P(Y | X) é conhecida. O erro de Bayes é 41,9%, e o melhor KNN chega a 42,0%.
+- **Fronteira de decisão de Bayes:** o conjunto de pontos x em que duas classes empatam em probabilidade (com duas classes, onde P = 0,5). De um lado da fronteira o classificador escolhe uma classe; do outro, a outra.
+- **Aqui:** na seção 4.2, uma simulação em que P(Y | X) é conhecida. A fronteira é `abs_ret` ≈ 3,5 bps, o erro de Bayes é 41,7%, e o melhor KNN chega a 41,9%.
+
+### Probabilidade estimada e calibração
+Além da classe, um classificador pode dar a probabilidade de cada classe (no KNN, a fração de vizinhos de cada classe). Uma probabilidade é **calibrada** quando, entre os casos com p̂ ≈ 0,7, cerca de 70% são de fato daquela classe. Um modelo pode **ordenar** bem os casos (os de p̂ alto são mais arriscados que os de p̂ baixo) e mesmo assim errar o **nível** das probabilidades.
+- **Por que importa:** decisões de risco e de tamanho de posição usam a probabilidade, não só a classe.
+- **Aqui:** na seção 4.1, o KNN ordena bem os minutos por chance de agitação, mas superestima essa chance, porque aprendeu num período mais agitado que o teste.
 
 ---
 
