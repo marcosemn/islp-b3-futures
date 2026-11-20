@@ -65,6 +65,8 @@ O salto em 26/10 é real: de sexta para segunda, o WDO abriu **+9,2%** e o WIN *
 - **Datas:** algumas centenas de linhas têm `DataNegocio` diferente do pregão (por exemplo, 01h do dia anterior) e são descartadas.
 - **Mesmo milissegundo:** cerca de 3/4 dos negócios dividem o milissegundo com outro (75% no WIN e 78% no WDO). A ordem do arquivo é preservada com uma ordenação estável.
 
+- **Negócios diretos:** o arquivo também não marca os negócios diretos (a corretora casa dois clientes dela, sem agressor). As barras trazem duas versões do fluxo: `imbalance`, com todos os negócios, e `imbalance_sem_diretos`, sem os prováveis diretos (proxy baseada nas regras da B3; ver `direct_trade_proxy` em `src/features.py` e o [glossário](GLOSSARIO.md#negócio-direto-oferta-direta)).
+
 > ⚠️ O arquivo **não informa o lado agressor**. O fluxo de compra e venda é *estimado* pela *tick rule* (Lee & Ready, 1991): se o preço sobe em relação ao negócio anterior, conta como compra agressora. Isso é uma aproximação e vale lembrar disso ao interpretar os resultados.
 
 ## Estrutura
@@ -95,7 +97,8 @@ Depois:
 
 ```bash
 python -m src.b3_download --dias 30   # ~55 MB por pregão
-python -m src.pipeline                # ~40 s por pregão; só processa os dias novos
+python -m src.pipeline                # ~1 min por pregão; só processa os dias novos
+python -m src.pipeline --refazer      # reprocessa tudo (quando o cálculo das barras mudar)
 ```
 
 e abra `notebooks/00_exploracao_wdo_win.ipynb`. Os notebooks leem os Parquet de `data/processed/`. Um pregão de WDO+WIN tem cerca de 6,7 milhões de negócios, e processar um dia por vez mantém a memória sob controle.

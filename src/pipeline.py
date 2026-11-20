@@ -45,10 +45,12 @@ def process_day(path: Path, processed_dir: Path = PROCESSED_DIR, freq: str = "1m
     return day
 
 
-def build(raw_dir: Path = RAW_DIR, processed_dir: Path = PROCESSED_DIR, freq: str = "1min") -> list[str]:
-    """Processa todos os arquivos de raw_dir que ainda não foram processados."""
+def build(raw_dir: Path = RAW_DIR, processed_dir: Path = PROCESSED_DIR, freq: str = "1min",
+          refazer: bool = False) -> list[str]:
+    """Processa os arquivos de raw_dir que ainda não foram processados.
+    refazer=True reprocessa todos (use quando o cálculo das barras mudar)."""
     done_file = processed_dir / f"done_{freq}.txt"
-    done = set(done_file.read_text().split()) if done_file.exists() else set()
+    done = set(done_file.read_text().split()) if done_file.exists() and not refazer else set()
     new = []
     for path in sorted(raw_dir.glob("*.zip")):
         if path.name in done:
@@ -71,5 +73,9 @@ def load(kind: str = "bars_1min", processed_dir: Path = PROCESSED_DIR) -> pd.Dat
 
 
 if __name__ == "__main__":
-    novos = build()
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--refazer", action="store_true", help="reprocessa todos os pregões (após mudar o cálculo)")
+    novos = build(refazer=parser.parse_args().refazer)
     print(f"{len(novos)} pregões processados")
