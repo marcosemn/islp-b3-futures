@@ -2,7 +2,7 @@
 
 Conceitos de mercado, microestrutura e estatística que aparecem neste estudo. Cada um tem o que é, por que importa aqui e onde aparece no repositório. A lista cresce conforme novos conceitos entram no código.
 
-**Sumário:** [Mercado e contratos](#mercado-e-contratos) · [Microestrutura](#microestrutura) · [Retornos e estatística descritiva](#retornos-e-estatística-descritiva) · [Regressão e inferência](#regressão-e-inferência) · [Validação de modelos](#validação-de-modelos)
+**Sumário:** [Mercado e contratos](#mercado-e-contratos) · [Microestrutura](#microestrutura) · [Retornos e estatística descritiva](#retornos-e-estatística-descritiva) · [Regressão e inferência](#regressão-e-inferência) · [Aprendizado estatístico (ISLP cap. 2)](#aprendizado-estatístico-islp-cap-2) · [Validação de modelos](#validação-de-modelos)
 
 ---
 
@@ -123,10 +123,65 @@ Duas variáveis andarem juntas não quer dizer que uma cause a outra. As duas po
 
 ---
 
+## Aprendizado estatístico (ISLP cap. 2)
+
+### f(X), erro redutível e erro irredutível
+O ponto de partida do curso é **Y = f(X) + ε**. O melhor palpite para Y quando se conhece X é f(x) = E[Y | X = x], a média de Y entre os casos com aquele x. O erro de um modelo tem duas partes: a **redutível**, que vem de estimar f mal e diminui com um modelo melhor, e a **irredutível**, que é a variância de ε. Essa segunda nenhum modelo elimina, porque ε depende de coisas que não estão em X.
+- **Por que importa:** em retornos de curto prazo, quase todo o erro é irredutível.
+- **Limitação:** o erro só é "irredutível" em relação às features escolhidas. Com outra informação, parte dele poderia ser explicada.
+- **Aqui:** seção 1 do [notebook do cap. 2](notebooks/ch02_statistical_learning.ipynb). A direção do próximo minuto é quase toda irredutível, e a intensidade não.
+
+### Flexibilidade de um modelo
+O quanto um modelo consegue se dobrar para seguir os dados. Uma reta é pouco flexível, porque só tem inclinação e intercepto. Um KNN com K=1 é flexível ao extremo, porque cada previsão copia o ponto mais próximo. Mais flexibilidade significa menos viés e mais variância.
+- **Aqui:** no KNN, a flexibilidade é 1/K. Os gráficos do [notebook do cap. 2](notebooks/ch02_statistical_learning.ipynb) usam 1/K no eixo horizontal.
+
+### Modelo paramétrico (estruturado) × não paramétrico
+Um modelo **paramétrico** supõe uma forma para f (por exemplo, uma reta) e estima poucos números. É estável, mas erra se a forma estiver errada. Um modelo **não paramétrico**, como o KNN, não supõe forma nenhuma. Ele se adapta melhor, mas precisa de muito mais dados e sofre com muitas features.
+
+### KNN (K vizinhos mais próximos)
+Para prever num ponto x, o KNN pega os K exemplos do treino mais próximos de x. Na **regressão**, tira a média do Y deles. Na **classificação**, escolhe a classe mais frequente entre eles. É a forma mais direta de estimar E[Y | X = x].
+- **Limitação:** usa distância, então as features precisam estar na mesma escala (ver padronização). Também sofre com a maldição da dimensionalidade.
+- **Aqui:** `KNeighborsRegressor` e `KNeighborsClassifier` (scikit-learn) no [notebook do cap. 2](notebooks/ch02_statistical_learning.ipynb).
+
+### Padronização
+Subtrair a média e dividir pelo desvio-padrão de cada feature, para que todas fiquem na mesma escala. Sem isso, no KNN, uma feature medida em minutos (0 a 560) dominaria outra medida em bps (0 a 10) só por causa da unidade. A média e o desvio-padrão vêm **só do treino**, para não vazar informação do teste.
+- **Aqui:** `StandardScaler` antes de cada KNN.
+
+### Treino × teste e MSE
+O modelo é ajustado no **treino** e avaliado no **teste**, que são dados que ele não viu. O **MSE** (*mean squared error*) é a média dos erros ao quadrado. O MSE de treino sempre cai quando o modelo fica mais flexível. O que interessa é o de teste.
+
+### Overfitting (sobreajuste)
+Quando o modelo decora o ruído do treino: erro de treino baixo e erro de teste alto.
+- **Aqui:** o KNN com K=1 tem erro de treino zero e é o pior modelo no teste, com R² fora da amostra de −116% a −149% na direção.
+
+### Trade-off viés-variância
+O erro de teste esperado é a soma de três partes: **viés²**, o erro por o modelo ser simples demais para a forma verdadeira de f; **variância**, o quanto a previsão muda se o modelo for treinado em outra amostra; e o **erro irredutível**. Aumentar a flexibilidade troca viés por variância. O ótimo fica no meio, e por isso a curva de erro de teste tem forma de "U".
+- **Aqui:** na seção 3.1 do [notebook do cap. 2](notebooks/ch02_statistical_learning.ipynb), uma simulação com f conhecido mede as três partes separadamente.
+
+### Maldição da dimensionalidade
+Com muitas features, os pontos ficam espalhados e até os "vizinhos mais próximos" estão longe. Métodos locais, como o KNN, pioram rápido.
+- **Aqui:** com 50 features de ruído, o KNN perde quase metade do R² e a regressão linear quase nada.
+
+### R² fora da amostra (MSE relativo)
+MSE relativo = MSE do modelo no teste / MSE do chute ingênuo (prever sempre a média do treino). R² fora da amostra = 1 − MSE relativo. Se for positivo, o modelo acrescenta informação. Se for negativo, ele é **pior** do que não saber nada, algo que o R² dentro da amostra nunca mostra.
+
+### Taxa de erro e chute ingênuo (*baseline*)
+Na classificação, a **taxa de erro** é a fração de previsões erradas. O **chute ingênuo** é prever sempre a classe mais comum no treino. Um classificador só tem valor se errar menos que isso.
+
+### Classificador de Bayes e erro de Bayes
+O classificador de Bayes escolhe, para cada x, a classe mais provável, P(Y | X = x). Ele tem o menor erro possível, o **erro de Bayes**, que é o erro irredutível da classificação. Na prática, P(Y | X) é desconhecida, então ele serve de referência teórica. O KNN tenta aproximá-lo.
+- **Aqui:** na seção 4.1, uma simulação em que P(Y | X) é conhecida. O erro de Bayes é 41,9%, e o melhor KNN chega a 42,0%.
+
+---
+
 ## Validação de modelos
 
 ### Retorno futuro (alvo) e viés de *look-ahead*
 O alvo de um modelo de previsão é o que acontece **depois** (ex.: `fwd_ret_1`, o retorno do próximo minuto). *Look-ahead* é usar, sem querer, informação que ainda não estaria disponível no momento da decisão. Isso produz resultados ótimos e falsos.
+
+### Mudança de regime (não estacionariedade)
+O comportamento do mercado muda ao longo do tempo (volatilidade, volume, correlações). Um modelo treinado num período pode encontrar outro "mundo" no teste.
+- **Aqui:** o treino do cap. 2 inclui 26/10, e o teste (10/11 a 17/11) foi bem mais calmo. Só ~35% dos minutos do teste ficaram acima da mediana de |retorno| do treino.
 
 ### Validação *walk-forward*
 Treinar com o passado e testar no período seguinte, avançando a janela no tempo. É a forma correta de validar em séries temporais. O k-fold aleatório mistura passado e futuro e vaza informação (cap. 5 do ISLP).

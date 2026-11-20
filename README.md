@@ -15,7 +15,7 @@ A ideia não é só refazer os labs do livro. Em cada capítulo, levo o método 
 
 | Cap. | Tema | Aplicação em WDO/WIN | Status |
 |---|---|---|---|
-| 2 | Statistical Learning | Exploração dos dados: volume intradiário, caudas, autocorrelação, fluxo × retorno | ✅ aulas (19/11/2026); exploração inicial dos dados no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb) |
+| 2 | Statistical Learning | Exploração dos dados: volume intradiário, caudas, autocorrelação, fluxo × retorno | ✅ aulas (19/11/2026); exploração no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb); f(X), viés-variância, dimensionalidade e Bayes no [notebook do cap. 2](notebooks/ch02_statistical_learning.ipynb) |
 | 3 | Regressão linear | Retorno do próximo minuto ~ desequilíbrio de agressão + retornos defasados + volume; diagnósticos e erros robustos | ⬜ |
 | 4 | Classificação | Direção do próximo movimento: logística, LDA/QDA, Naive Bayes, KNN contra um baseline ingênuo | ⬜ |
 | 5 | Reamostragem | k-fold × *walk-forward*: medir o vazamento de informação do futuro; bootstrap de métricas | ⬜ |
@@ -71,10 +71,11 @@ O salto em 26/10 é real: de sexta para segunda, o WDO abriu **+9,2%** e o WIN *
 src/
   b3_download.py # baixa os .zip de negócio a negócio para data/raw/
   b3_loader.py   # lê um .zip, filtra WDO/WIN, remove cancelados, monta timestamps
-  features.py    # vencimento principal, tick rule, barras de tempo, retornos futuros
+  features.py    # vencimento principal, tick rule, barras de tempo, defasagens, retornos futuros
   pipeline.py    # processa um pregão por vez: data/raw/*.zip -> data/processed/*.parquet
 notebooks/
   00_exploracao_wdo_win.ipynb
+  ch02_statistical_learning.ipynb
   chXX_*.ipynb   # um por capítulo do curso
 data/            # (não versionado) raw/ = .zip da B3, processed/ = parquet
 ```

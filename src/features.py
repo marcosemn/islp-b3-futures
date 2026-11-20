@@ -65,6 +65,16 @@ def time_bars(trades: pd.DataFrame, freq: str = "1min") -> pd.DataFrame:
     return bars.drop(columns="notional")
 
 
+def add_lags(bars: pd.DataFrame, col: str, lags: int) -> pd.DataFrame:
+    """Acrescenta col_l1..col_l{lags}: o valor de `col` k barras antes, sem atravessar
+    a noite nem intervalos sem negócios (ver trading_segments)."""
+    out = bars.copy()
+    g = out[col].groupby(trading_segments(out.index))
+    for k in range(1, lags + 1):
+        out[f"{col}_l{k}"] = g.shift(k)
+    return out
+
+
 def add_forward_return(bars: pd.DataFrame, horizon: int = 1, col: str = "close") -> pd.DataFrame:
     """Alvo: log-retorno das próximas `horizon` barras, sem atravessar a noite nem
     intervalos sem negócios (ver trading_segments)."""
