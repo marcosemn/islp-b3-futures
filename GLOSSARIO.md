@@ -70,6 +70,11 @@ A "exponencial" dos números inteiros: cada passo (aqui, cada contrato a mais) m
 Ordena os itens do maior para o menor e mostra que fração do total os x% maiores carregam. Se todos fossem iguais, a curva seria a diagonal. Quanto mais longe dela, mais concentrado.
 - **Aqui:** os 1% maiores negócios carregam 24% do volume do WDO e 14% do WIN.
 
+### Corretora (participante de negociação) e seu código
+A instituição que envia as ordens dos clientes à bolsa. No arquivo negócio a negócio, cada negócio traz o **código numérico** da corretora compradora e o da vendedora, mas não o cliente. O código é o do perfil "Participante de Negociação Pleno" na lista oficial de participantes da B3.
+- **Limitação:** a mesma corretora dos dois lados quer dizer que ela atendeu quem comprou e quem vendeu, normalmente dois clientes diferentes, e não que alguém negociou consigo mesmo.
+- **Aqui:** `src/corretoras.py` traduz os 31 códigos que aparecem em WDO e WIN para nomes curtos (3 = XP, 85 = BTG, 1618 = IDEAL…). O mercado é concentrado: as 5 maiores corretoras fazem 69% do volume do WDO e 84% do WIN ([notebook 00](notebooks/00_exploracao_wdo_win.ipynb)).
+
 ### Agressor
 Quem toma a iniciativa do negócio, enviando uma ordem a mercado contra uma ordem que já estava no livro. Comprar "agredindo" o ask indica pressão compradora; vender no bid indica pressão vendedora.
 

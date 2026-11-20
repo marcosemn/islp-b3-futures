@@ -55,7 +55,7 @@ O salto em 26/10 é real: de sexta para segunda, o WDO abriu **+9,2%** e o WIN *
 | `HoraFechamento` | HHMMSSmmm, horário de Brasília |
 | `CodigoIdentificadorNegocio` | id do negócio |
 | `TipoSessaoPregao` | 1 = regular, 6 = after hours |
-| `CodigoParticipanteComprador` / `Vendedor` | código da corretora de cada lado |
+| `CodigoParticipanteComprador` / `Vendedor` | código numérico da corretora de cada lado (os nomes vêm da [busca de participantes da B3](https://www.b3.com.br/pt_br/produtos-e-servicos/participantes/busca-de-participantes/participantes/); ver `src/corretoras.py`) |
 | `TipoDoCanal` | existe no arquivo real, mas não aparece no glossário |
 
 **O que o arquivo real mostra** (pregão de 17/11/2026, `17-11-2026_NEGOCIOSAVISTA_DRV.txt`):
@@ -76,6 +76,7 @@ src/
   b3_download.py # baixa os .zip de negócio a negócio para data/raw/
   b3_loader.py   # lê um .zip, filtra WDO/WIN, remove cancelados, monta timestamps
   features.py    # vencimento principal, tick rule, leilões, proxy de negócios diretos, barras, defasagens, retornos futuros
+  corretoras.py  # código da corretora -> nome curto (lista oficial de participantes da B3)
   pipeline.py    # processa um pregão por vez: data/raw/*.zip -> data/processed/*.parquet
 notebooks/
   00_exploracao_wdo_win.ipynb
