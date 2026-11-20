@@ -15,7 +15,6 @@ import zipfile
 from pathlib import Path
 
 import pandas as pd
-from pandas.api.types import union_categoricals
 
 COLUMNS = [
     "DataReferencia",
@@ -112,16 +111,3 @@ def read_trades(source: str | Path | bytes, roots: tuple[str, ...] | None = DEFA
     # Texto repetido milhões de vezes vira category (~1,7 GB -> poucas centenas de MB por pregão).
     return df.astype({c: "category" for c in ["root", "ticker", "buyer", "seller"]})
 
-
-def load_raw_dir(raw_dir: str | Path = "data/raw", roots: tuple[str, ...] | None = DEFAULT_ROOTS) -> pd.DataFrame:
-    """Lê todos os arquivos .zip/.txt/.csv de raw_dir e concatena."""
-    raw_dir = Path(raw_dir)
-    files = sorted(p for p in raw_dir.iterdir() if p.suffix.lower() in {".zip", ".txt", ".csv"})
-    if not files:
-        raise FileNotFoundError(f"Nenhum arquivo em {raw_dir.resolve()} - veja o README (seção Dados).")
-    # union_categoricals evita que o concat transforme as categorias de volta em texto
-    frames = [read_trades(p, roots) for p in files]
-    out = pd.concat(frames, ignore_index=True)
-    for c in ["root", "ticker", "buyer", "seller"]:
-        out[c] = union_categoricals([f[c] for f in frames])
-    return out
