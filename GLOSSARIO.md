@@ -27,7 +27,8 @@ Quando um contrato se aproxima do vencimento, o mercado migra para o seguinte. O
 
 ### Leilão de abertura e de fechamento
 Períodos em que as ordens se acumulam sem negociar e depois são executadas todas a um único preço. A abertura pode ser estendida quando o preço se move demais.
-- **Aqui:** explica a pausa na abertura de 26/10 e o negócio isolado do WIN às 18h31 todos os dias. `trading_segments()` em [src/features.py](src/features.py) evita que esses saltos virem "retornos de 1 minuto".
+- **Aqui:** explica a pausa na abertura de 26/10 e a barra do WIN às 18:31. A negociação contínua do WIN termina às 18:24:59. Às 18:31, o leilão de fechamento executa de uma vez, num preço único e em ~5 ms, de 800 a 3.100 negócios (8 a 31 mil contratos). `trading_segments()` em [src/features.py](src/features.py) evita que esses saltos virem "retornos de 1 minuto".
+- **Limitação para a tick rule:** num leilão não há agressor. Todos os negócios saem no mesmo preço e herdam o sinal do último negócio antes do leilão.
 
 ### Gap
 Diferença entre o fechamento de um pregão e a abertura do seguinte, causada por notícias que saem com o mercado fechado.
@@ -48,6 +49,20 @@ Um **negócio** é uma execução entre uma corretora compradora e uma vendedora
 Uma estatística sobre negócios pode ser feita **por contagem** (cada negócio vale 1) ou **ponderada pelo volume** (cada negócio vale o número de contratos). Quando a distribuição do tamanho é muito assimétrica, as duas contam histórias diferentes.
 - **Aqui:** 67% dos negócios do WDO são de 1 contrato, mas eles movimentam só 15% do volume. Já os negócios de 11 contratos ou mais são menos de 8% e carregam ~60% dos contratos ([notebook 00](notebooks/00_exploracao_wdo_win.ipynb)).
 - **Limitação:** o tamanho do *negócio* não é o tamanho da *ordem*. Uma ordem grande que encontra várias ordens pequenas no livro vira vários negócios pequenos.
+
+### Negócio direto (operação direta)
+Negócio em que a corretora junta um comprador e um vendedor que ela mesma atende e registra a operação entre eles, no preço de mercado, em vez de os dois agredirem o livro. Não há agressor.
+- **Como aparece nos dados:** a mesma corretora como compradora e vendedora, num único negócio grande e no preço da tela. O arquivo público não tem um campo que marque isso, então a identificação é estatística.
+- **Aqui:** acima de 5.000 contratos, 97–100% dos negócios têm a mesma corretora dos dois lados, contra 16–40% nos negócios comuns ([notebook 00](notebooks/00_exploracao_wdo_win.ipynb)). Para a tick rule eles são ruído: um negócio direto de 30 mil contratos vira uma "agressão" falsa.
+
+### Cauda longa e função de sobrevivência (CCDF)
+A **função de sobrevivência** P(X ≥ x) dá, para cada valor x, a fração das observações que são pelo menos x. Em escala log-log, uma distribuição de **cauda curta** (como a exponencial) despenca, enquanto uma de **cauda longa** desce quase em linha reta e chega a valores enormes. Uma reta em log-log é a marca de uma *cauda de potência*.
+- **Por que importa:** com cauda longa, a média é puxada por poucos valores extremos e descreve mal o caso típico.
+- **Aqui:** o tamanho dos negócios. Com a mesma média, uma distribuição de cauda curta tornaria um negócio de 100 contratos praticamente impossível. Nos dados, 1 em cada ~40 mil negócios do WDO passa de 1.000 contratos.
+
+### Curva de concentração
+Ordena os itens do maior para o menor e mostra que fração do total os x% maiores carregam. Se todos fossem iguais, a curva seria a diagonal. Quanto mais longe dela, mais concentrado.
+- **Aqui:** os 1% maiores negócios carregam 24% do volume do WDO e 14% do WIN.
 
 ### Agressor
 Quem toma a iniciativa do negócio, enviando uma ordem a mercado contra uma ordem que já estava no livro. Comprar "agredindo" o ask indica pressão compradora; vender no bid indica pressão vendedora.
