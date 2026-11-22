@@ -16,7 +16,7 @@ A ideia não é só refazer os labs do livro. Em cada capítulo, levo o método 
 | Cap. | Tema | Aplicação em WDO/WIN | Status |
 |---|---|---|---|
 | 2 | Statistical Learning | Exploração dos dados: volume intradiário, caudas, autocorrelação, fluxo × retorno | ✅ aulas (19/11/2026); exploração no [notebook 00](notebooks/00_exploracao_wdo_win.ipynb); f(X), viés-variância, dimensionalidade e Bayes no [notebook do cap. 2](notebooks/ch02_statistical_learning.ipynb) |
-| 3 | Regressão linear | Retorno do próximo minuto ~ desequilíbrio de agressão + retornos defasados + volume; diagnósticos e erros robustos | ✅ aulas (22/11/2026) |
+| 3 | Regressão linear | Intensidade e direção do próximo minuto: testes t e F, intervalos, dummies de horário, interações, diagnósticos e erros robustos | ✅ aulas (22/11/2026); inferência e diagnósticos no [notebook do cap. 3](notebooks/ch03_linear_regression.ipynb) |
 | 4 | Classificação | Direção do próximo movimento: logística, LDA/QDA, Naive Bayes, KNN contra um baseline ingênuo | ⬜ |
 | 5 | Reamostragem | k-fold × *walk-forward*: medir o vazamento de informação do futuro; bootstrap de métricas | ⬜ |
 | 6 | Regularização | Ridge/Lasso com dezenas de features (lags, fluxo, horário, WIN→WDO) | ⬜ |
@@ -43,6 +43,8 @@ Cada estudo tem uma nota com as perguntas respondidas, as premissas, os achados 
 | Estudo | Relatório | Notebook |
 |---|---|---|
 | Exploração dos dados de WDO e WIN | [relatorios/00_exploracao_wdo_win.md](relatorios/00_exploracao_wdo_win.md) | [notebook 00](notebooks/00_exploracao_wdo_win.ipynb) |
+| Cap. 2: Statistical Learning | [relatorios/ch02_statistical_learning.md](relatorios/ch02_statistical_learning.md) | [notebook do cap. 2](notebooks/ch02_statistical_learning.ipynb) |
+| Cap. 3: Regressão linear | [relatorios/ch03_linear_regression.md](relatorios/ch03_linear_regression.md) | [notebook do cap. 3](notebooks/ch03_linear_regression.ipynb) |
 
 ## Dados
 
@@ -85,11 +87,13 @@ src/
   b3_loader.py   # lê um .zip, filtra WDO/WIN, remove cancelados, monta timestamps
   features.py    # vencimento principal, tick rule, leilões, proxy de negócios diretos, barras, defasagens, retornos futuros
   corretoras.py  # código da corretora -> nome curto (lista oficial de participantes da B3)
+  dataset.py     # features, alvos e divisão treino/teste dos capítulos 2 e 3
   pipeline.py    # processa um pregão por vez: data/raw/*.zip -> data/processed/*.parquet
 relatorios/        # uma nota de pesquisa por estudo (.md)
 notebooks/
   00_exploracao_wdo_win.ipynb
   ch02_statistical_learning.ipynb
+  ch03_linear_regression.ipynb
   chXX_*.ipynb   # um por capítulo do curso
 data/            # (não versionado) raw/ = .zip da B3, processed/ = parquet
 ```

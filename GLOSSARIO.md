@@ -2,7 +2,7 @@
 
 Conceitos de mercado, microestrutura e estatística que aparecem neste estudo. Cada um tem o que é, por que importa aqui e onde aparece no repositório. A lista cresce conforme novos conceitos entram no código.
 
-**Sumário:** [Mercado e contratos](#mercado-e-contratos) · [Microestrutura](#microestrutura) · [Retornos e estatística descritiva](#retornos-e-estatística-descritiva) · [Regressão e inferência](#regressão-e-inferência) · [Aprendizado estatístico (ISLP cap. 2)](#aprendizado-estatístico-islp-cap-2) · [Validação de modelos](#validação-de-modelos)
+**Sumário:** [Mercado e contratos](#mercado-e-contratos) · [Microestrutura](#microestrutura) · [Retornos e estatística descritiva](#retornos-e-estatística-descritiva) · [Regressão e inferência](#regressão-e-inferência) · [Aprendizado estatístico (ISLP cap. 2)](#aprendizado-estatístico-islp-cap-2) · [Regressão linear (ISLP cap. 3)](#regressão-linear-islp-cap-3) · [Validação de modelos](#validação-de-modelos)
 
 ---
 
@@ -196,6 +196,10 @@ Para prever num ponto x, o KNN pega os K exemplos do treino mais próximos de x.
 - **Limitação:** usa distância, então as features precisam estar na mesma escala (ver padronização). Também sofre com a maldição da dimensionalidade.
 - **Aqui:** `KNeighborsRegressor` e `KNeighborsClassifier` (scikit-learn) no [notebook do cap. 2](notebooks/ch02_statistical_learning.ipynb).
 
+### Viés de borda do KNN
+Nas pontas da faixa de x, os K vizinhos mais próximos ficam todos de um lado só. No extremo superior, por exemplo, eles têm x menor que o ponto previsto. A média deles puxa a previsão para o centro, e a curva estimada "achata" nas bordas mesmo quando a relação verdadeira não achata. Quanto maior o K, maior o efeito.
+- **Aqui:** no WIN, para os minutos do 0,1% maior \|retorno\| (62 bps em média), o KNN com K=500 prevê 9 bps no minuto seguinte, enquanto a média real é 24 bps ([notebook do cap. 2](notebooks/ch02_statistical_learning.ipynb), seção 1).
+
 ### Padronização
 Subtrair a média e dividir pelo desvio-padrão de cada feature, para que todas fiquem na mesma escala. Sem isso, no KNN, uma feature medida em minutos (0 a 560) dominaria outra medida em bps (0 a 10) só por causa da unidade. A média e o desvio-padrão vêm **só do treino**, para não vazar informação do teste.
 - **Aqui:** `StandardScaler` antes de cada KNN.
@@ -230,6 +234,67 @@ O classificador de Bayes escolhe, para cada x, a classe mais provável, P(Y | X 
 Além da classe, um classificador pode dar a probabilidade de cada classe (no KNN, a fração de vizinhos de cada classe). Uma probabilidade é **calibrada** quando, entre os casos com p̂ ≈ 0,7, cerca de 70% são de fato daquela classe. Um modelo pode **ordenar** bem os casos (os de p̂ alto são mais arriscados que os de p̂ baixo) e mesmo assim errar o **nível** das probabilidades.
 - **Por que importa:** decisões de risco e de tamanho de posição usam a probabilidade, não só a classe.
 - **Aqui:** na seção 4.1, o KNN ordena bem os minutos por chance de agitação, mas superestima essa chance, porque aprendeu num período mais agitado que o teste.
+
+
+---
+
+## Regressão linear (ISLP cap. 3)
+
+### Erro-padrão residual (RSE)
+O desvio-padrão do erro da regressão: quanto o Y real se afasta, tipicamente, da reta ajustada, na unidade de Y.
+- **Aqui:** 2,6 bps (WDO) e 4,5 bps (WIN) na regressão do \|retorno\| seguinte sobre o atual, do tamanho do próprio \|retorno\| típico ([notebook do cap. 3](notebooks/ch03_linear_regression.ipynb), seção 1).
+
+### Intervalo de confiança
+A faixa que, com 95% de confiança, contém o valor verdadeiro de um coeficiente: aproximadamente o coeficiente ± 2 erros-padrão. Se o intervalo não inclui zero, o coeficiente é significativo a 5%.
+- **Aqui:** com erros HAC, o efeito do \|retorno\| atual no WDO fica entre 0,26 e 0,35 bp por bp.
+
+### Intervalo de confiança × intervalo de previsão
+O intervalo de **confiança** de uma previsão diz onde está a *média* de Y para aquele x. O intervalo de **previsão** diz onde deve cair *um* Y individual, e por isso inclui o erro irredutível e é muito mais largo.
+- **Aqui:** num minuto de 5 bps no WDO, a média do seguinte está entre 3,1 e 3,4 bps, mas o intervalo de previsão vai de −1,9 a 8,4 bps. O valor negativo, impossível para um \|retorno\|, mostra que a premissa de erros normais não vale para estes dados.
+
+### Teste F
+Testa várias hipóteses ao mesmo tempo. A versão **global** pergunta se *todos* os coeficientes são zero, ou seja, se o modelo não explica nada. A versão **de grupo** pergunta se um subconjunto de features, junto, não acrescenta nada. O teste t olha um coeficiente de cada vez; o F olha o conjunto.
+- **Aqui:** as quatro features de direção, juntas, não explicam a intensidade (p-valor de 0,38 no WDO e 0,15 no WIN); as defasagens de \|retorno\|, juntas, explicam (p-valor ≈ 0).
+
+### Confusão (regressão simples × múltipla)
+Uma feature pode parecer importante sozinha só porque é correlacionada com outra que de fato explica Y. Na regressão múltipla, que mantém as outras fixas, o efeito dela some. É o exemplo do jornal no livro.
+- **Aqui:** no WIN, o volume tem coeficiente +1,18 sozinho e −0,16 (não significativo) quando entram o \|retorno\| e o horário.
+
+### Variável qualitativa e *dummy*
+Uma variável de categorias (como a faixa de horário) entra na regressão como várias *dummies* (0 ou 1), uma por categoria, menos uma: a **categoria de referência**. Cada coeficiente é a diferença em relação a ela.
+- **Aqui:** faixas de horário com a primeira meia hora como referência, e uma dummy para 26/10, que vale +2,1 bps (WDO) e +4,8 bps (WIN) de agitação.
+
+### Interação (sinergia) e princípio hierárquico
+Um termo X1 × X2 permite que o efeito de X1 dependa do valor de X2. Pelo **princípio hierárquico**, se a interação entra, os efeitos principais (X1 e X2 sozinhos) também entram, mesmo que não sejam significativos.
+- **Aqui:** \|retorno\| × volume tem sinais opostos: positivo no WDO e negativo no WIN. No WIN, é significativo no treino e piora a previsão fora da amostra.
+
+### Centralização
+Subtrair a média de uma variável antes de usá-la numa interação ou num polinômio. Não muda o ajuste nem as previsões, só a leitura dos coeficientes: com X2 centralizado, o coeficiente de X1 passa a ser o efeito de X1 no valor médio de X2, em vez de no X2 = 0, que pode nem existir.
+- **Aqui:** `log_vol_c`. Sem centralizar, o coeficiente de `abs_ret` nos modelos com interação seria o efeito num minuto com volume de 1 contrato.
+
+### Heterocedasticidade e teste de Breusch-Pagan
+Heterocedasticidade é a variância do erro mudar com o nível de X ou do valor ajustado; no gráfico de resíduos, aparece como um funil. O teste de **Breusch-Pagan** verifica isso formalmente. Ela não enviesa os coeficientes, mas deixa o erro-padrão comum errado.
+- **Aqui:** forte nos dois ativos (p-valor ≈ 0). É o principal motivo de o erro-padrão HAC sair mais que o dobro do comum.
+
+### Estatística de Durbin-Watson
+Mede a autocorrelação de primeira ordem dos resíduos: 2 indica erros independentes, abaixo de 2 autocorrelação positiva e acima de 2 negativa.
+- **Aqui:** 2,0 nos dois ativos. A autocorrelação dos erros é desprezível.
+
+### Resíduo estudentizado (outliers)
+O resíduo dividido pelo seu próprio erro-padrão. Com erros normais, só 0,27% passariam de 3 em valor absoluto; muito mais do que isso indica caudas gordas ou outliers.
+- **Aqui:** 1,7% (WDO) e 1,4% (WIN), de 5 a 6 vezes o esperado numa normal.
+
+### Alavancagem (*leverage*)
+O quanto os valores de X de uma observação são incomuns em relação aos outros. Observações de alavancagem alta podem, sozinhas, puxar a reta. A média é (p + 1)/n.
+- **Aqui:** 2,4% a 2,6% dos minutos têm mais de 3 vezes a alavancagem média.
+
+### Distância de Cook (influência)
+Combina resíduo e alavancagem e mede quanto os coeficientes mudam se a observação for retirada.
+- **Aqui:** os minutos mais influentes são quase todos de 26/10. Sem o 1% mais influente, o coeficiente linear do \|retorno\| no WIN cai de 0,063 para 0,021.
+
+### Colinearidade e VIF
+Colinearidade é quando features são tão correlacionadas que o modelo não consegue separar o efeito de cada uma, e os erros-padrão explodem. O **VIF** (*variance inflation factor*) diz quantas vezes a variância de um coeficiente aumenta por causa disso; o livro considera problemático acima de 5 a 10.
+- **Aqui:** o VIF fica entre 1,0 e 1,7 nas 9 features. Não há colinearidade séria; a mudança do coeficiente do volume no WIN é confusão.
 
 ---
 
