@@ -1,6 +1,6 @@
 # Cap. 3: Regressão linear aplicada a WDO e WIN
 
-**Amostra:** 22 pregões, de 20/10 a 19/11/2026, barras de 1 minuto do vencimento principal de WDO e WIN. Inferência no treino (20/10 a 10/11, 15 pregões); previsão fora da amostra no teste (11/11 a 19/11, 7 pregões). **Versão:** 22/11/2026. **Detalhamento e código:** [notebook do cap. 3](../notebooks/ch03_linear_regression.ipynb). **Conceitos:** [glossário](../GLOSSARIO.md#regressão-linear-islp-cap-3).
+**Amostra:** 22 pregões, de 20/10 a 19/11/2026, barras de 1 minuto do vencimento principal de WDO e WIN. Inferência no treino (20/10 a 10/11, 15 pregões); previsão fora da amostra no teste (11/11 a 19/11, 7 pregões). **Versão:** 22/11/2026. **Detalhamento e código:** [notebook do cap. 3](../notebooks/ch03_linear_regression.ipynb). **Dados:** pregões e hashes em [dados_usados.csv](dados_usados.csv). **Conceitos:** [glossário](../GLOSSARIO.md#regressão-linear-islp-cap-3).
 
 ---
 
@@ -102,6 +102,5 @@ As medidas de influência usam o ajuste com erro-padrão comum, porque dependem 
 
 **Reprodução.**
 ```bash
-python -m src.pipeline   # se houver pregões novos em data/raw/
-# depois, executar notebooks/ch03_linear_regression.ipynb (~4 minutos)
+python -m src.executar   # testes, pipeline, comparação com o manifesto e os notebooks
 ```

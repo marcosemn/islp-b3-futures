@@ -11,6 +11,17 @@ A ideia não é só refazer os labs do livro. Em cada capítulo, levo o método 
 - Curso: [edX — Statistical Learning with Python](https://learning.edx.org/course/course-v1:StanfordOnline+SOHS-YSTATSLEARNINGP+1T2024/home)
 - Glossário: [GLOSSARIO.md](GLOSSARIO.md), com os conceitos de mercado, microestrutura e estatística usados no estudo.
 
+## Principais resultados
+
+Amostra de 22 pregões, de 20/10 a 19/11/2026. Premissas, limitações e números completos estão em cada relatório.
+
+- **A direção do próximo minuto não é previsível com estes dados.** Nem o fluxo de agressão, nem os retornos passados, nem o outro ativo: nenhum dos 18 testes de antecipação sobrevive à correção para testes múltiplos, e os modelos dos capítulos 2 e 3 ficam com R² fora da amostra entre −0,4% e +0,1%, ou seja, empatam com prever a média ([exploração](relatorios/00_exploracao_wdo_win.md), [cap. 2](relatorios/ch02_statistical_learning.md), [cap. 3](relatorios/ch03_linear_regression.md)).
+- **A intensidade do próximo minuto é previsível, e o efeito é medido com precisão.** Cada bp de \|retorno\| num minuto acrescenta cerca de 0,3 bp ao seguinte, com estatística t de 13 a 14 mesmo com erros-padrão robustos. Com horário e defasagens, o R² fora da amostra chega a 13% no WDO e de 22% a 24% no WIN ([cap. 3](relatorios/ch03_linear_regression.md), [cap. 2](relatorios/ch02_statistical_learning.md)).
+- **Uma regressão linear bem especificada compete com o KNN.** Ela vence no WDO e fica cerca de 2 pontos atrás no WIN, contra um KNN com o K escolhido olhando o teste ([cap. 3](relatorios/ch03_linear_regression.md)).
+- **O volume é concentrado em poucos negócios e poucas corretoras.** Os 1% maiores negócios carregam 24% do volume do WDO; as 5 maiores corretoras fazem 69% do volume do WDO e 84% do WIN. Os maiores negócios têm as características de ofertas diretas ([exploração](relatorios/00_exploracao_wdo_win.md)).
+- **Caudas gordas e poucos eventos dominantes.** A curtose dos retornos de 1 minuto é 15 (WDO) e 21 (WIN), e um único pregão (26/10) concentra a maioria dos minutos mais influentes nas regressões; por isso as análises aparecem com e sem esse dia ([exploração](relatorios/00_exploracao_wdo_win.md), [cap. 3](relatorios/ch03_linear_regression.md)).
+- **Com um mês de dados, parte dos resultados ainda muda com a amostra.** Dois pregões a mais mudaram o ranking dos modelos do cap. 2 e o único teste de antecipação abaixo de 0,05 ([cap. 2](relatorios/ch02_statistical_learning.md), [exploração](relatorios/00_exploracao_wdo_win.md)).
+
 ## Progresso
 
 | Cap. | Tema | Aplicação em WDO/WIN | Status |
@@ -89,7 +100,11 @@ src/
   corretoras.py  # código da corretora -> nome curto (lista oficial de participantes da B3)
   dataset.py     # features, alvos e divisão treino/teste dos capítulos 2 e 3
   pipeline.py    # processa um pregão por vez: data/raw/*.zip -> data/processed/*.parquet
-relatorios/        # uma nota de pesquisa por estudo (.md)
+  manifesto.py   # lista dos pregões usados, com o SHA-256 de cada arquivo da B3
+  executar.py    # refaz tudo: testes, pipeline, comparação com o manifesto e notebooks
+tests/           # testes do código de src/ com dados sintéticos (pytest)
+relatorios/      # uma nota de pesquisa por estudo (.md)
+  dados_usados.csv  # manifesto: os pregões e hashes que geraram os números das notas
 notebooks/
   00_exploracao_wdo_win.ipynb
   ch02_statistical_learning.ipynb
@@ -116,6 +131,16 @@ python -m src.pipeline --refazer      # reprocessa tudo (quando o cálculo das b
 ```
 
 e abra `notebooks/00_exploracao_wdo_win.ipynb`. Os notebooks leem os Parquet de `data/processed/`. Um pregão de WDO+WIN tem cerca de 6,7 milhões de negócios, e processar um dia por vez mantém a memória sob controle.
+
+**Testes e reprodução completa:**
+
+```bash
+python -m pytest                              # testes de src/ (~2 s; não precisam dos dados da B3)
+python -m src.executar                        # testes + pipeline + comparação com o manifesto + os 3 notebooks (~25 min)
+python -m src.executar --atualizar-manifesto  # depois de revisar os textos, registra a amostra nova
+```
+
+`relatorios/dados_usados.csv` lista os pregões que geraram os números das notas, com o SHA-256 de cada arquivo da B3: quem tiver os mesmos arquivos obtém os mesmos resultados. O `executar` avisa quando os arquivos de `data/raw/` diferem do manifesto, porque nesse caso os notebooks são refeitos com dados novos, mas os textos ainda citam a amostra anterior.
 
 ## Cuidados metodológicos
 

@@ -1,6 +1,6 @@
 # Cap. 2: Statistical Learning aplicado a WDO e WIN
 
-**Amostra:** 22 pregões, de 20/10 a 19/11/2026, barras de 1 minuto do vencimento principal de WDO e WIN. Treino de 20/10 a 10/11 (15 pregões) e teste de 11/11 a 19/11 (7 pregões). **Versão:** 22/11/2026. **Detalhamento e código:** [notebook do cap. 2](../notebooks/ch02_statistical_learning.ipynb). **Conceitos:** [glossário](../GLOSSARIO.md#aprendizado-estatístico-islp-cap-2).
+**Amostra:** 22 pregões, de 20/10 a 19/11/2026, barras de 1 minuto do vencimento principal de WDO e WIN. Treino de 20/10 a 10/11 (15 pregões) e teste de 11/11 a 19/11 (7 pregões). **Versão:** 22/11/2026. **Detalhamento e código:** [notebook do cap. 2](../notebooks/ch02_statistical_learning.ipynb). **Dados:** pregões e hashes em [dados_usados.csv](dados_usados.csv). **Conceitos:** [glossário](../GLOSSARIO.md#aprendizado-estatístico-islp-cap-2).
 
 ---
 
@@ -99,6 +99,5 @@ Decomposição medida por simulação, em bps², com 200 conjuntos de treino de 
 
 **Reprodução.**
 ```bash
-python -m src.pipeline   # se houver pregões novos em data/raw/
-# depois, executar notebooks/ch02_statistical_learning.ipynb (~11 minutos)
+python -m src.executar   # testes, pipeline, comparação com o manifesto e os notebooks
 ```

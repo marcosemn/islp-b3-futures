@@ -1,6 +1,6 @@
 # Exploração dos dados negócio a negócio de WDO e WIN
 
-**Amostra:** 22 pregões, de 20/10 a 19/11/2026, com o vencimento principal do mini dólar (WDO) e do mini Ibovespa (WIN), negócio a negócio e em barras de 1 minuto. **Versão:** 20/11/2026. **Detalhamento e código:** [notebook 00](../notebooks/00_exploracao_wdo_win.ipynb). **Conceitos:** [glossário](../GLOSSARIO.md).
+**Amostra:** 22 pregões, de 20/10 a 19/11/2026, com o vencimento principal do mini dólar (WDO) e do mini Ibovespa (WIN), negócio a negócio e em barras de 1 minuto. **Versão:** 20/11/2026. **Detalhamento e código:** [notebook 00](../notebooks/00_exploracao_wdo_win.ipynb). **Dados:** pregões e hashes em [dados_usados.csv](dados_usados.csv). **Conceitos:** [glossário](../GLOSSARIO.md).
 
 ---
 
@@ -116,7 +116,5 @@ Não. A maioria dos negócios é de 1 contrato (67% no WDO e 59% no WIN), mas el
 
 **Reprodução.**
 ```bash
-python -m src.b3_download --dias 30   # baixa os .zip para data/raw/
-python -m src.pipeline                # processa os pregões novos
-# depois, executar notebooks/00_exploracao_wdo_win.ipynb
+python -m src.executar   # testes, pipeline, comparação com o manifesto e os notebooks
 ```
