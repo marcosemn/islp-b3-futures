@@ -72,7 +72,7 @@ Não. Há heterocedasticidade forte, outliers de 5 a 6 vezes a frequência de um
 
 ### A7. Regressão linear × KNN fora da amostra
 - **No WDO, a regressão linear com faixas de horário, interação e termo quadrático vence o KNN:** 13,0% de R² fora da amostra, contra 11,4% do KNN e 11,5% da regressão linear simples com 9 features.
-- **No WIN, o KNN fica à frente:** 24,2%, contra 22,4% do melhor modelo linear (faixas de horário e dummy de 26/10), com o K escolhido olhando o teste.
+- **No WIN, o KNN fica à frente:** 24,2%, contra 20,9% do modelo linear completo e 22,4% do linear mais simples (faixas de horário e dummy de 26/10). O K do KNN foi escolhido olhando o teste, e apontar a melhor das especificações lineares também seria; as duas vantagens são um pouco otimistas.
 - **O que mais ajudou a regressão linear foram as faixas de horário** (no WIN, de 20,0% para 22,4%). Como a relação com o \|retorno\| é quase linear, o principal desvio da reta era o formato do dia.
 
 ---
