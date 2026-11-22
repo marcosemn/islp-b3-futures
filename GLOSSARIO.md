@@ -27,7 +27,7 @@ Quando um contrato se aproxima do vencimento, o mercado migra para o seguinte. O
 
 ### Leilão de abertura e de fechamento
 Períodos em que as ordens se acumulam sem negociar e depois são executadas todas a um único preço. A abertura pode ser estendida quando o preço se move demais.
-- **Aqui:** explica a pausa na abertura de 26/10 e a barra do WIN às 18:31. A negociação contínua do WIN termina às 18:24:59. Às 18:31, o leilão de fechamento executa de uma vez, num preço único e em ~5 ms, de 800 a 3.100 negócios (8 a 31 mil contratos). `trading_segments()` em [src/features.py](src/features.py) evita que esses saltos virem "retornos de 1 minuto".
+- **Aqui:** explica a pausa na abertura de 26/10 e a barra do WIN às 18:31. A negociação contínua do WIN termina às 18:24:59 (em 28/10, às 18:25:00). Às 18:31, o leilão de fechamento executa de uma vez, num preço único e em ~5 ms, de 800 a 3.100 negócios (8 a 31 mil contratos). `trading_segments()` em [src/features.py](src/features.py) evita que esses saltos virem "retornos de 1 minuto".
 - **Limitação para a tick rule:** num leilão não há agressor. Todos os negócios saem no mesmo preço e herdam o sinal do último negócio antes do leilão.
 
 ### Gap
@@ -59,7 +59,7 @@ Pela regra da B3 (Manual de Procedimentos Operacionais de Negociação), a ofert
 ### Cauda longa e função de sobrevivência (CCDF)
 A **função de sobrevivência** P(X ≥ x) dá, para cada valor x, a fração das observações que são pelo menos x. Em escala log-log, uma distribuição de **cauda curta** (como a exponencial) despenca, enquanto uma de **cauda longa** desce quase em linha reta e chega a valores enormes. Uma reta em log-log é a marca de uma *cauda de potência*.
 - **Por que importa:** com cauda longa, a média é puxada por poucos valores extremos e descreve mal o caso típico.
-- **Aqui:** o tamanho dos negócios. Com a mesma média, uma distribuição de cauda curta tornaria um negócio de 100 contratos praticamente impossível (5 em 1 trilhão no WDO). Nos dados, é 1 em cada 369, e 1 em cada ~40 mil negócios do WDO passa de 1.000 contratos.
+- **Aqui:** o tamanho dos negócios. Com a mesma média, uma distribuição de cauda curta tornaria um negócio de 100 contratos praticamente impossível (5 em 1 trilhão no WDO). Nos dados, é 1 em cada 369, e 1 em cada ~36 mil negócios do WDO tem pelo menos 1.000 contratos.
 - **Como ler o gráfico:** os dois eixos estão em **escala logarítmica** (cada marca vale 10 vezes a anterior), para caberem frações de 1 até 0,00000001. Uma curva quase reta quer dizer que, cada vez que o tamanho é multiplicado por 10, a chance cai por um fator parecido.
 
 ### Distribuição geométrica

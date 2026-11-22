@@ -52,7 +52,7 @@ Não. A maioria dos negócios é de 1 contrato (67% no WDO e 59% no WIN), mas el
 - *Limitação:* o arquivo identifica a corretora, não o cliente nem o tipo de cliente. A identificação dos diretos é estatística, válida para o grupo e não para cada negócio.
 
 ### A3. Leilões
-- **O WIN tem um leilão de fechamento diário.** A negociação contínua termina às 18:24:59. Às 18:31, o leilão executa de uma vez de 800 a 3.100 negócios (8 a 31 mil contratos), num único preço e em no máximo 6 milissegundos.
+- **O WIN tem um leilão de fechamento diário.** A negociação contínua termina às 18:24:59 (em 28/10, às 18:25:00). Às 18:31, o leilão executa de uma vez de 800 a 3.100 negócios (8 a 31 mil contratos), num único preço e em no máximo 6 milissegundos.
 - **Os leilões explicam a faixa intermediária de tamanho no WIN.** Cerca de 63% dos negócios do WIN entre 1.001 e 5.000 contratos saem dos leilões de abertura (44%) e de fechamento (20%). Os negócios acima de 5.000 contratos não saem de leilão.
 - *Efeito nas análises:* o leilão de fechamento fica num trecho próprio e não gera retorno de 1 minuto. Ele só entra nas contas de volume.
 
@@ -69,7 +69,7 @@ Não. A maioria dos negócios é de 1 contrato (67% no WDO e 59% no WIN), mas el
 - *Limitação:* com um mês de dados, curtose e assimetria de 1 minuto descrevem os poucos eventos extremos do período, não um parâmetro estável.
 
 ### A6. Autocorrelação
-- **A direção quase não tem memória.** A autocorrelação do retorno no lag 1 é −0,02 (WDO) e +0,01 (WIN). Sem 26/10, o WDO mostra uma reversão pequena (o minuto seguinte devolve em média 3% do movimento), mas ela não é significativa com erros HAC (p-valor 0,06) e equivale a ~0,1 bp, contra ~0,9 bp de 1 tick do WDO.
+- **A direção quase não tem memória.** A autocorrelação do retorno no lag 1 é −0,02 (WDO) e +0,01 (WIN). Sem 26/10, o WDO mostra uma reversão pequena (o minuto seguinte devolve em média 3% do movimento), mas ela não é significativa com erros HAC (p-valor 0,06) e equivale a menos de 0,1 bp num minuto típico (o |retorno| típico do WDO fica entre 1,7 e 2,7 bps), contra ~0,9 bp de 1 tick.
 - **A intensidade tem memória.** A autocorrelação do |retorno| no lag 1 é 0,29 (WDO) e 0,33 (WIN) com todos os pregões, e ~0,22 sem 26/10. É a aglomeração de volatilidade: minuto agitado tende a vir seguido de minuto agitado.
 - **A banda usual do gráfico de autocorrelação exagera a significância.** Ela supõe variância constante. A mesma reversão do WDO tem p-valor 0,001 com o erro-padrão comum e 0,06 com o HAC.
 
