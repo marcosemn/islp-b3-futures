@@ -145,7 +145,7 @@ A probabilidade de ver um beta pelo menos tão longe de zero quanto o estimado *
 - **Aqui:** as tabelas de regressão do [notebook 00](notebooks/00_exploracao_wdo_win.ipynb) mostram t e p-valor lado a lado.
 
 ### R²
-A fração da variação de Y explicada pelo modelo, de 0 a 1. Em retornos de curto prazo, valores muito pequenos (como 0,1%) já são comuns, e mesmo assim podem ter valor econômico se forem estáveis.
+A fração da variação de Y explicada pelo modelo, de 0 a 1 quando medida nos próprios dados do ajuste (com intercepto). Na regressão simples, é a correlação entre X e Y ao quadrado. Em retornos de curto prazo, valores muito pequenos (como 0,1%) já são comuns, e mesmo assim podem ter valor econômico se forem estáveis.
 
 ### Erros-padrão HAC (Newey-West)
 *Heteroskedasticity and Autocorrelation Consistent.* A fórmula padrão do erro-padrão supõe erros independentes e com variância constante. Em finanças isso falha: a volatilidade muda ao longo do tempo e observações vizinhas se influenciam. O resultado é um erro-padrão pequeno demais, e coisas parecem significativas sem ser. O HAC corrige o erro-padrão para esses dois problemas. O beta não muda, só a incerteza em volta dele.
@@ -220,7 +220,9 @@ Com muitas features, os pontos ficam espalhados e até os "vizinhos mais próxim
 - **Aqui:** com 9 features, o raio da vizinhança que contém 10% dos minutos já cobre ~60% da distância típica entre dois minutos quaisquer. Com 50 features de ruído, o KNN perde ~40% do R² e a regressão linear quase nada.
 
 ### R² fora da amostra (MSE relativo)
-MSE relativo = MSE do modelo no teste / MSE do chute ingênuo (prever sempre a média do treino). R² fora da amostra = 1 − MSE relativo. Se for positivo, o modelo acrescenta informação. Se for negativo, ele é **pior** do que não saber nada, algo que o R² dentro da amostra nunca mostra.
+MSE relativo = MSE do modelo no teste / MSE do chute ingênuo (prever sempre a média do treino). R² fora da amostra = 1 − MSE relativo: quanto do erro do chute ingênuo o modelo elimina em dados que não viu. Se for positivo, o modelo acrescenta informação. Se for negativo, ele é **pior** do que não saber nada, algo que o R² dentro da amostra nunca mostra: no ajuste, a regressão linear sempre pode zerar os coeficientes e reproduzir a média, mas no teste não há essa garantia. É a medida usual na literatura de previsão de retornos (Campbell e Thompson, 2008), em que a maioria dos preditores publicados tem R² fora da amostra negativo (Welch e Goyal, 2008).
+- **Como ler um valor negativo:** perto de zero (como −0,03% ou −0,4%), é empate com o chute ingênuo, ou seja, não há sinal e o modelo só paga a variância de estimar parâmetros. Muito negativo, é sobreajuste: o modelo copiou ruído do treino. Uma referência: prever com o valor de um minuto sorteado ao acaso dá MSE de cerca de 2 vezes a variância, ou R² de cerca de −100%.
+- **Aqui:** no [cap. 2](notebooks/ch02_statistical_learning.ipynb), a direção tem R² de −0,03% a −0,4% com 1 feature (empate) e de −89% a −145% com o KNN de K=1 (sobreajuste).
 
 ### Taxa de erro e chute ingênuo (*baseline*)
 Na classificação, a **taxa de erro** é a fração de previsões erradas. O **chute ingênuo** é prever sempre a classe mais comum no treino. Um classificador só tem valor se errar menos que isso.
