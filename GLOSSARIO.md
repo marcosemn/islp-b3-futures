@@ -225,7 +225,8 @@ MSE relativo = MSE do modelo no teste / MSE do chute ingênuo (prever sempre a m
 - **Aqui:** no [cap. 2](notebooks/ch02_statistical_learning.ipynb), a direção tem R² de −0,03% a −0,4% com 1 feature (empate) e de −89% a −145% com o KNN de K=1 (sobreajuste).
 
 ### Taxa de erro e chute ingênuo (*baseline*)
-Na classificação, a **taxa de erro** é a fração de previsões erradas. O **chute ingênuo** é prever sempre a classe mais comum no treino. Um classificador só tem valor se errar menos que isso.
+Na classificação, a **taxa de erro** é a fração de previsões erradas. O **chute ingênuo** é prever sempre a mesma classe, normalmente a mais comum no treino. Um classificador só tem valor se errar menos que isso.
+- **Aqui:** no [cap. 2](notebooks/ch02_statistical_learning.ipynb), a referência é o chute constante que erra menos no teste, a mais exigente possível. Com classes empatadas no treino (corte na mediana), a regra da classe mais comum vira um desempate arbitrário: no WIN, apontaria "sempre agitado", que erraria 60,9% num teste mais calmo, contra 39,1% de "sempre calmo".
 
 ### Classificador de Bayes e erro de Bayes
 O classificador de Bayes escolhe, para cada x, a classe mais provável, P(Y | X = x). Ele tem o menor erro possível, o **erro de Bayes**, que é o erro irredutível da classificação. Na prática, P(Y | X) é desconhecida, então ele serve de referência teórica. O KNN tenta aproximá-lo.

@@ -1,13 +1,13 @@
 # Cap. 2: Statistical Learning aplicado a WDO e WIN
 
-**Amostra:** 22 pregões, de 20/10 a 19/11/2026, barras de 1 minuto do vencimento principal de WDO e WIN. Treino de 20/10 a 10/11 (15 pregões) e teste de 11/11 a 19/11 (7 pregões). **Versão:** 22/11/2026. **Detalhamento e código:** [notebook do cap. 2](../notebooks/ch02_statistical_learning.ipynb). **Dados:** pregões e hashes em [dados_usados.csv](dados_usados.csv). **Conceitos:** [glossário](../GLOSSARIO.md#aprendizado-estatístico-islp-cap-2).
+**Amostra:** 22 pregões, de 20/10 a 19/11/2026, barras de 1 minuto do vencimento principal de WDO e WIN. Treino de 20/10 a 10/11 (15 pregões) e teste de 11/11 a 19/11 (7 pregões). **Versão:** 25/11/2026. **Detalhamento e código:** [notebook do cap. 2](../notebooks/ch02_statistical_learning.ipynb). **Dados:** pregões e hashes em [dados_usados.csv](dados_usados.csv). **Conceitos:** [glossário](../GLOSSARIO.md#aprendizado-estatístico-islp-cap-2).
 
 ---
 
 ## Perguntas respondidas
 
 **1. A direção do próximo minuto é previsível com estas features?**
-Não. O melhor modelo de regressão tem R² fora da amostra de 0,10% (WDO) e 0,05% (WIN), e o classificador KNN não bate de forma confiável o chute de prever sempre a classe mais comum ([A1](#a1-fx-e-erro-irredutível), [A3](#a3-flexibilidade-e-erro-de-teste) e [A5](#a5-classificação)).
+Não. O melhor modelo de regressão tem R² fora da amostra de 0,10% (WDO) e 0,05% (WIN), e o classificador KNN não bate de forma confiável o chute de prever sempre a mesma classe ([A1](#a1-fx-e-erro-irredutível), [A3](#a3-flexibilidade-e-erro-de-teste) e [A5](#a5-classificação)).
 
 **2. Um modelo mais flexível prevê melhor a intensidade do próximo minuto?**
 Não necessariamente. No WDO, a regressão linear empata com o melhor KNN (11,5% contra 11,4% de R² fora da amostra). No WIN, o KNN fica à frente (24,2% contra 20,0%), mas com o K escolhido olhando o próprio teste ([A3](#a3-flexibilidade-e-erro-de-teste) e [A7](#a7-interpretabilidade-e-estabilidade)).
@@ -60,8 +60,9 @@ Decomposição medida por simulação, em bps², com 200 conjuntos de treino de 
 ![Viés², variância e erro redutível conforme a flexibilidade](../figures/ch02_vies_variancia.png)
 
 ### A5. Classificação
-- **Direção (sobe, parado, cai):** no WDO, o KNN erra 55,1%, contra 55,0% do chute ingênuo. No WIN, erra 49,2% contra 51,0%, uma diferença de ~2 erros-padrão (0,8 ponto), obtida com o melhor de 10 valores de K escolhido no teste, o que não é evidência de sinal.
-- **Minuto agitado (\|retorno\| acima da mediana do treino):** o KNN erra 36,5% (WDO) e 35,4% (WIN), contra 40,7% e 39,1% de prever sempre "calmo". No WIN, o chute ingênuo da tabela (60,9%) é "sempre agitado", porque as classes empataram no treino e "agitado" ganhou por décimos.
+- **A referência é o melhor chute constante:** prever sempre a classe que erra menos no teste. Em três das quatro tarefas, é também a classe mais comum no treino. A exceção é "agitado" no WIN: as classes empatam no treino por construção (corte na mediana), o desempate apontaria "sempre agitado", e esse chute erraria 60,9% no teste, o que exageraria o ganho do KNN.
+- **Direção (sobe, parado, cai):** no WDO, o KNN erra 55,1%, contra 55,0% de prever sempre "sobe". No WIN, erra 49,2% contra 51,0%, uma diferença de ~2 erros-padrão (0,8 ponto), obtida com o melhor de 10 valores de K escolhido no teste, o que não é evidência de sinal.
+- **Minuto agitado (\|retorno\| acima da mediana do treino):** o KNN erra 36,5% (WDO) e 35,4% (WIN), contra 40,7% e 39,1% de prever sempre "calmo", um ganho de ~4 pontos (~5 erros-padrão) nos dois ativos.
 - **O teste foi mais calmo que o treino:** só 39% a 41% dos minutos do teste ficaram acima da mediana de agitação do treino, que inclui 26/10.
 
 ### A6. Probabilidades e o classificador de Bayes
